@@ -6,11 +6,12 @@
 }}
 
 SELECT
-    id,
-    code,
-    date_edit,
-    EXTRACT(YEAR FROM date_edit) as annees,
-    CASE EXTRACT(MONTH FROM date_edit)
+--     id,
+    facture_id,
+    facture_id AS code,
+    date_facturation,
+    EXTRACT(YEAR FROM date_facturation) as annees,
+    CASE EXTRACT(MONTH FROM date_facturation)
         WHEN 1 THEN 'janvier'
         WHEN 2 THEN 'fevrier'
         WHEN 3 THEN 'mars'
@@ -24,7 +25,7 @@ SELECT
         WHEN 11 THEN 'novembre'
         WHEN 12 THEN 'decembre'
     END as mois,
-    CASE EXTRACT(DOW FROM date_edit)
+    CASE EXTRACT(DOW FROM date_facturation)
         WHEN 0 THEN 'dimanche'
         WHEN 1 THEN 'lundi'
         WHEN 2 THEN 'mardi'
@@ -33,9 +34,9 @@ SELECT
         WHEN 5 THEN 'vendredi'
         WHEN 6 THEN 'samedi'
     END as jour,
-    customers_id,
-    qte_totale,
-    total_amount,
-    total_paid,
+    client_id,
+    quantite_totale as qte_totale,
+    montant_ht as total_amount,
+    montant_ttc as total_paid,
     created_at
 FROM {{ ref('stg_factures') }}

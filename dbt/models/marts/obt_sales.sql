@@ -28,7 +28,7 @@ SELECT
     v.jour,
     v.pu,
     v.qte,
-    f.id as facture_id,
+    f.facture_id as facture_id,
     f.code as facture_code,
     f.qte_totale,
     f.total_amount,
@@ -41,7 +41,7 @@ SELECT
     cu.code as customer_code,
     cu.nom as customer_nom
 FROM ventes v
-JOIN factures f ON v.factures_id = f.id
-JOIN books b ON v.books_id = b.id
+JOIN factures f ON v.facture_id = f.facture_id
+JOIN books b ON v.livre_id = b.id
 JOIN category c ON b.category_id = c.id
-JOIN customers cu ON f.customers_id = cu.id
+JOIN customers cu ON f.client_id = cu.id

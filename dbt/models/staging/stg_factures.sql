@@ -8,7 +8,7 @@
 SELECT
     ID::INTEGER as facture_id,
     CODE::VARCHAR(50) as reference,
-    CUSTOMER_ID::INTEGER as client_id,
+    CUSTOMERS_ID::INTEGER as client_id,
     QTE_TOTALE::DECIMAL(10,2) as quantite_totale,
     TOTAL_AMOUNT::DECIMAL(12,2) as montant_ht,
     TOTAL_PAID::DECIMAL(12,2) as montant_ttc,

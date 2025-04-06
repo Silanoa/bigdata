@@ -7,7 +7,7 @@
 
 SELECT
     ID,
-    CODE,
+--     CODE,
     INTITULE,
     CREATED_AT
 FROM {{ source('raw', 'CATEGORY') }}
