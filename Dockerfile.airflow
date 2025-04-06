@@ -18,4 +18,10 @@ RUN pip install --no-cache-dir 'pyarrow<10.1.0,>=10.0.1'
 RUN pip install --no-cache-dir \
     snowflake-connector-python \
     pandas \
-    psycopg2-binary 
+    psycopg2-binary
+
+
+# Install DBT Core with Snowflake adapter
+RUN pip install --no-cache-dir dbt-core dbt-snowflake
+
+

@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="📊 Dashboard Bookshop", layout="wide")
 
-# Connexion Snowflake
+# Connexion directe à Snowflake
 @st.cache_resource
 def get_conn():
     return snowflake.connector.connect(
@@ -15,92 +15,123 @@ def get_conn():
         account=os.environ["SNOWFLAKE_ACCOUNT"],
         warehouse=os.environ["SNOWFLAKE_WAREHOUSE"],
         database="BOOKSHOP",
-        schema="MARTS",
         role=os.environ["SNOWFLAKE_ROLE"]
     )
 
 @st.cache_data
 def load_data():
     conn = get_conn()
-    return pd.read_sql("SELECT * FROM obt_sales", conn)
+    df = pd.read_sql("SELECT * FROM STAGING_MARTS.OBT_SALES", conn)
+    df.columns = [col.lower() for col in df.columns]
+    df = df.rename(columns={
+        "annees": "year",
+        "mois": "month",
+        "jour": "day",
+        "pu": "unit_price",
+        "qte": "quantity",
+        "facture_id": "invoice_id",
+        "facture_code": "invoice_code",
+        "qte_totale": "invoice_quantity_total",
+        "total_amount": "amount_total",
+        "total_paid": "amount_paid",
+        "category_intitule": "category",
+        "book_code": "book_id",
+        "book_intitule": "book_title",
+        "isbn_10": "isbn_10",
+        "isbn_13": "isbn_13",
+        "customer_code": "customer_id",
+        "customer_nom": "customer_name"
+    })
+    return df
 
 @st.cache_data
 def load_books_mois():
     conn = get_conn()
-    return pd.read_sql("SELECT * FROM WAREHOUSE.fact_books_mois", conn)
+    df = pd.read_sql("SELECT * FROM STAGING_WAREHOUSE.FACT_BOOKS_MOIS", conn)
+    df.columns = [col.lower() for col in df.columns]
+    return df
 
 @st.cache_data
 def load_books_jour():
     conn = get_conn()
-    return pd.read_sql("SELECT * FROM WAREHOUSE.fact_books_jour", conn)
+    df = pd.read_sql("SELECT * FROM STAGING_WAREHOUSE.FACT_BOOKS_JOUR", conn)
+    df.columns = [col.lower() for col in df.columns]
+    return df
 
 @st.cache_data
 def load_books_annees():
     conn = get_conn()
-    return pd.read_sql("SELECT * FROM WAREHOUSE.fact_books_annees", conn)
+    df = pd.read_sql("SELECT * FROM STAGING_WAREHOUSE.FACT_BOOKS_ANNEES", conn)
+    df.columns = [col.lower() for col in df.columns]
+    return df
 
-# Chargement des données
+# Chargement
 df = load_data()
 df_books_mois = load_books_mois()
 df_books_jour = load_books_jour()
 df_books_annees = load_books_annees()
 
-# Onglets
+# Interface
 onglet = st.sidebar.radio("Choisir une vue", ["Vue globale", "Par mois", "Par jour", "Par année", "Exporter"])
-
-# Filtres généraux
 st.sidebar.header("Filtres")
-annee = st.sidebar.selectbox("Année", sorted(df["annees"].dropna().unique()))
-mois = st.sidebar.multiselect("Mois", df["mois"].dropna().unique(), default=df["mois"].unique())
-categorie = st.sidebar.multiselect("Catégorie", df["category"].dropna().unique(), default=df["category"].unique())
 
-# Données filtrées
-df_filtered = df[(df["annees"] == annee) & df["mois"].isin(mois) & df["category"].isin(categorie)]
+# Filtres
+year = st.sidebar.selectbox("Année", sorted(df["year"].dropna().unique()))
+months = st.sidebar.multiselect("Mois", df["month"].dropna().unique(), default=df["month"].unique())
+categories = st.sidebar.multiselect("Catégorie", df["category"].dropna().unique(), default=df["category"].unique())
 
-# VUE GLOBALE
+# Filtrage
+df_filtered = df[
+    (df["year"] == year) &
+    (df["month"].isin(months)) &
+    (df["category"].isin(categories))
+    ]
+
+# Vue globale
 if onglet == "Vue globale":
     st.title("📚 Tableau de bord - Bookshop")
     col1, col2, col3 = st.columns(3)
-    col1.metric("Total ventes", f"{df_filtered['total_paid'].sum():,.0f} FCFA")
+    col1.metric("Total ventes", f"{df_filtered['amount_paid'].sum():,.0f} FCFA")
     col2.metric("Commandes", df_filtered.shape[0])
-    col3.metric("Clients uniques", df_filtered['customer_code'].nunique())
+    col3.metric("Clients uniques", df_filtered['customer_id'].nunique())
 
     st.subheader("📘 Top livres vendus")
-    top_books = df_filtered.groupby("book_title")["qte"].sum().sort_values(ascending=False).head(10)
+    top_books = df_filtered.groupby("book_title")["quantity"].sum().sort_values(ascending=False).head(10)
     st.bar_chart(top_books)
 
     st.subheader("👤 Meilleurs clients")
-    top_clients = df_filtered.groupby("customer_name")["total_paid"].sum().sort_values(ascending=False).head(10)
+    top_clients = df_filtered.groupby("customer_name")["amount_paid"].sum().sort_values(ascending=False).head(10)
     st.bar_chart(top_clients)
 
     st.subheader("📚 Répartition par catégorie")
-    cat_data = df_filtered.groupby("category")["qte"].sum().sort_values(ascending=False)
+    cat_data = df_filtered.groupby("category")["quantity"].sum().sort_values(ascending=False)
     fig1, ax1 = plt.subplots()
     ax1.pie(cat_data, labels=cat_data.index, autopct="%1.1f%%", startangle=90)
     ax1.axis("equal")
     st.pyplot(fig1)
 
-# PAR MOIS
+# Vue par mois
 elif onglet == "Par mois":
     st.title("📈 Ventes par mois")
-    filtered_mois = df_books_mois[df_books_mois["annees"] == annee]
-    pivot_mois = filtered_mois.pivot(index="mois", columns="book_title", values="quantite_totale").fillna(0)
-    st.line_chart(pivot_mois)
+    filtered = df_books_mois[df_books_mois["annees"] == year]
+    pivot = filtered.pivot(index="mois", columns="book_title", values="quantite_totale").fillna(0)
+    st.line_chart(pivot)
 
-# PAR JOUR
+# Vue par jour
 elif onglet == "Par jour":
     st.title("📅 Répartition des ventes par jour de la semaine")
-    day_data = df_filtered.groupby("jour")["qte"].sum().reindex([
+    filtered = df_books_jour[df_books_jour["annees"] == year]
+    day_data = filtered.groupby("jour")["quantite_totale"].sum().reindex([
         "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"])
     st.bar_chart(day_data)
 
-# PAR ANNÉE
+# Vue par année
 elif onglet == "Par année":
     st.title("🗓️ Vue annuelle des ventes")
-    annee_data = df_books_annees.groupby("annees")["quantite_totale"].sum()
-    st.line_chart(annee_data)
+    annual = df_books_annees.groupby("annees")["quantite_totale"].sum()
+    st.line_chart(annual)
 
-# EXPORTER
+# Export
 elif onglet == "Exporter":
     st.title("📁 Export des données")
     csv = df_filtered.to_csv(index=False).encode('utf-8')

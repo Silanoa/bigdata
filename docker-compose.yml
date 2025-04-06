@@ -1,7 +1,6 @@
 version: '3'
 
 services:
-  # Base de données source PostgreSQL (source uniquement)
   postgres-source:
     image: postgres:15
     container_name: postgres-source
@@ -19,7 +18,6 @@ services:
       - postgres_source_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d
 
-  # Base de données PostgreSQL pour Airflow
   postgres-airflow:
     image: postgres:15
     container_name: postgres-airflow
@@ -34,7 +32,6 @@ services:
     volumes:
       - postgres_airflow_data:/var/lib/postgresql/data
 
-  # Airflow
   airflow-init:
     build:
       context: .
@@ -74,6 +71,7 @@ services:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./scripts:/opt/airflow/scripts
+      - ./dbt:/opt/airflow/dbt
     ports:
       - "8080:8080"
     command: webserver
@@ -109,9 +107,9 @@ services:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./scripts:/opt/airflow/scripts
+      - ./dbt:/opt/airflow/dbt  # 👈 ajout du dossier DBT
     command: scheduler
 
-  # DBT
   dbt:
     build:
       context: .
@@ -127,7 +125,6 @@ services:
       - ./dbt:/usr/app/dbt
     command: tail -f /dev/null
 
-  # Application Streamlit
   streamlit:
     build:
       context: .
@@ -138,7 +135,14 @@ services:
       - ./streamlit:/app
     depends_on:
       - postgres-airflow
+    environment:
+      - SNOWFLAKE_ACCOUNT=${SNOWFLAKE_ACCOUNT}
+      - SNOWFLAKE_USER=${SNOWFLAKE_USER}
+      - SNOWFLAKE_PASSWORD=${SNOWFLAKE_PASSWORD}
+      - SNOWFLAKE_ROLE=${SNOWFLAKE_ROLE}
+      - SNOWFLAKE_DATABASE=${SNOWFLAKE_DATABASE}
+      - SNOWFLAKE_WAREHOUSE=${SNOWFLAKE_WAREHOUSE}
 
 volumes:
   postgres_source_data:
-  postgres_airflow_data: 
+  postgres_airflow_data:
