@@ -1,7 +1,6 @@
 {{
     config(
-        materialized='table',
-        schema='WAREHOUSE'
+        materialized='table'
     )
 }}
 

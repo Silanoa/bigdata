@@ -9,6 +9,6 @@ SELECT
     COUNT(*) AS nombre_ventes,
     SUM(v.qte) AS quantite_totale,
     SUM(v.pu * v.qte) AS montant_total
-FROM BOOKSHOP.STAGING_WAREHOUSE.fact_ventes v
-JOIN BOOKSHOP.STAGING_WAREHOUSE.dim_books b ON v.livre_id = b.id
+FROM BOOKSHOP.WAREHOUSE.fact_ventes v
+JOIN BOOKSHOP.WAREHOUSE.dim_books b ON v.livre_id = b.id
 GROUP BY b.code, book_id, b.intitule, v.annees, v.mois

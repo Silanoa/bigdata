@@ -2,24 +2,24 @@
   
     
 
-        create or replace transient table BOOKSHOP.STAGING_MARTS.obt_sales
+        create or replace transient table BOOKSHOP.MARTS.obt_sales
          as
         (
 
 WITH ventes AS (
-    SELECT * FROM BOOKSHOP.STAGING_WAREHOUSE.fact_ventes
+    SELECT * FROM BOOKSHOP.WAREHOUSE.fact_ventes
 ),
 factures AS (
-    SELECT * FROM BOOKSHOP.STAGING_WAREHOUSE.fact_factures
+    SELECT * FROM BOOKSHOP.WAREHOUSE.fact_factures
 ),
 category AS (
-    SELECT * FROM BOOKSHOP.STAGING_WAREHOUSE.dim_category
+    SELECT * FROM BOOKSHOP.WAREHOUSE.dim_category
 ),
 books AS (
-    SELECT * FROM BOOKSHOP.STAGING_WAREHOUSE.dim_books
+    SELECT * FROM BOOKSHOP.WAREHOUSE.dim_books
 ),
 customers AS (
-    SELECT * FROM BOOKSHOP.STAGING_WAREHOUSE.dim_customers
+    SELECT * FROM BOOKSHOP.WAREHOUSE.dim_customers
 )
 
 SELECT

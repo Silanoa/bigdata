@@ -2,7 +2,7 @@
   
     
 
-        create or replace transient table BOOKSHOP.STAGING_WAREHOUSE.dim_books
+        create or replace transient table BOOKSHOP.WAREHOUSE.dim_books
          as
         (
 
@@ -14,7 +14,7 @@ SELECT
     isbn_10,
     isbn_13,
     created_at
-FROM BOOKSHOP.STAGING_STAGGING.stg_books
+FROM BOOKSHOP.STAGGING.stg_books
         );
       
   

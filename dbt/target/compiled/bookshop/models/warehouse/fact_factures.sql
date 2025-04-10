@@ -34,4 +34,4 @@ SELECT
     montant_ht as total_amount,
     montant_ttc as total_paid,
     created_at
-FROM BOOKSHOP.STAGING_staging.stg_factures
+FROM BOOKSHOP.STAGGING.stg_factures

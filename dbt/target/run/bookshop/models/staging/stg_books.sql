@@ -2,7 +2,7 @@
   
     
 
-        create or replace transient table BOOKSHOP.STAGING_STAGGING.stg_books
+        create or replace transient table BOOKSHOP.STAGGING.stg_books
          as
         (
 

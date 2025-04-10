@@ -2,26 +2,51 @@ FROM apache/airflow:2.7.1
 
 USER root
 
-# Install system dependencies
+COPY --chown=airflow:airflow dbt/ /usr/app/dbt/
+
+ENV PATH="/home/airflow/dbt/bin:${PATH}"
+# Variables d'environnement pour optimiser le chargement d'Airflow
+ENV AIRFLOW__CORE__STORE_SERIALIZED_DAGS=True
+ENV AIRFLOW__CORE__STORE_DAG_CODE=False
+ENV AIRFLOW__CORE__LOAD_EXAMPLES=False
+
+# Installer les dépendances système
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Télécharger le script d'installation de SnowSQL (version 1.3.3)
+# Installer SnowSQL avec une méthode plus robuste
+RUN mkdir -p /usr/local/bin && \
+    curl -O "https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.3/linux_x86_64/snowsql-1.3.3-linux_x86_64.bash" && \
+    SNOWSQL_DEST=/usr/local/bin SNOWSQL_LOGIN_SHELL=/dev/null bash snowsql-1.3.3-linux_x86_64.bash || \
+    (mkdir -p /home/airflow/.snowsql && \
+     mkdir -p /usr/local/bin && \
+     curl -o /usr/local/bin/snowsql https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.3/linux_x86_64/snowsql && \
+     chmod +x /usr/local/bin/snowsql)
+
+# Définir l'emplacement d'installation de SnowSQL (par défaut, le script installe SnowSQL dans /usr/bin)
+ENV SNOWSQL_HOME=/usr/bin
+ENV PATH="${SNOWSQL_HOME}:${PATH}"
+
+# Vérifier l'installation de SnowSQL (optionnel)
+RUN snowsql -v || true
+
+# Revenir à l'utilisateur non-privilégié pour exécuter Airflow
 USER airflow
 
-# Install specific version of pyarrow
+# Installer une version spécifique de pyarrow
 RUN pip install --no-cache-dir 'pyarrow<10.1.0,>=10.0.1'
 
-# Install other Python dependencies
+# Installer d'autres dépendances Python
 RUN pip install --no-cache-dir \
     snowflake-connector-python \
     pandas \
     psycopg2-binary
 
+RUN pip install dbt-core dbt-postgres dbt-snowflake
 
-# Install DBT Core with Snowflake adapter
-RUN pip install --no-cache-dir dbt-core dbt-snowflake
-
+CMD ["webserver"]
 

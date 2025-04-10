@@ -1,5 +1,5 @@
 
-  create or replace   view BOOKSHOP.STAGING_staging.stg_factures
+  create or replace   view BOOKSHOP.STAGGING.stg_factures
   
    as (
     

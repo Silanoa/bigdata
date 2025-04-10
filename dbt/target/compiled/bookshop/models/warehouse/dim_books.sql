@@ -8,4 +8,4 @@ SELECT
     isbn_10,
     isbn_13,
     created_at
-FROM BOOKSHOP.STAGING_STAGGING.stg_books
+FROM BOOKSHOP.STAGGING.stg_books

@@ -1,5 +1,5 @@
 
-  create or replace   view BOOKSHOP.STAGING_staging.stg_ventes
+  create or replace   view BOOKSHOP.STAGGING.stg_ventes
   
    as (
     

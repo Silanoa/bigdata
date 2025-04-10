@@ -1,7 +1,7 @@
 
 
 WITH source AS (
-    SELECT * FROM BOOKSHOP.STAGING_staging.stg_ventes
+    SELECT * FROM BOOKSHOP.STAGGING.stg_ventes
 )
 
 SELECT

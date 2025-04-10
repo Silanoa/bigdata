@@ -20,10 +20,10 @@ models:
   bookshop:
     +materialized: table
     staging:
-      +schema: STAGGING
+      schema: STAGGING
       +materialized: table
     warehouse:
-      +schema: WAREHOUSE
+      schema: WAREHOUSE
       +materialized: table
     marts:
       +schema: MARTS

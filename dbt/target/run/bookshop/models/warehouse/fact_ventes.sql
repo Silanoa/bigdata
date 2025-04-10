@@ -2,12 +2,12 @@
   
     
 
-        create or replace transient table BOOKSHOP.STAGING_WAREHOUSE.fact_ventes
+        create or replace transient table BOOKSHOP.WAREHOUSE.fact_ventes
          as
         (
 
 WITH source AS (
-    SELECT * FROM BOOKSHOP.STAGING_staging.stg_ventes
+    SELECT * FROM BOOKSHOP.STAGGING.stg_ventes
 )
 
 SELECT

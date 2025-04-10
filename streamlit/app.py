@@ -21,7 +21,7 @@ def get_conn():
 @st.cache_data
 def load_data():
     conn = get_conn()
-    df = pd.read_sql("SELECT * FROM STAGING_MARTS.OBT_SALES", conn)
+    df = pd.read_sql("SELECT * FROM MARTS.OBT_SALES", conn)
     df.columns = [col.lower() for col in df.columns]
     df = df.rename(columns={
         "annees": "year",
@@ -47,21 +47,21 @@ def load_data():
 @st.cache_data
 def load_books_mois():
     conn = get_conn()
-    df = pd.read_sql("SELECT * FROM STAGING_WAREHOUSE.FACT_BOOKS_MOIS", conn)
+    df = pd.read_sql("SELECT * FROM WAREHOUSE.FACT_BOOKS_MOIS", conn)
     df.columns = [col.lower() for col in df.columns]
     return df
 
 @st.cache_data
 def load_books_jour():
     conn = get_conn()
-    df = pd.read_sql("SELECT * FROM STAGING_WAREHOUSE.FACT_BOOKS_JOUR", conn)
+    df = pd.read_sql("SELECT * FROM WAREHOUSE.FACT_BOOKS_JOUR", conn)
     df.columns = [col.lower() for col in df.columns]
     return df
 
 @st.cache_data
 def load_books_annees():
     conn = get_conn()
-    df = pd.read_sql("SELECT * FROM STAGING_WAREHOUSE.FACT_BOOKS_ANNEES", conn)
+    df = pd.read_sql("SELECT * FROM WAREHOUSE.FACT_BOOKS_ANNEES", conn)
     df.columns = [col.lower() for col in df.columns]
     return df
 
