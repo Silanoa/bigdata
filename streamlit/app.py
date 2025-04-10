@@ -60,7 +60,9 @@ def sanitize_dataframe(df, date_columns=None, numeric_columns=None, categorical_
         for col in numeric_columns:
             if col in df_clean.columns:
                 try:
-                    df_clean[col] = pd.to_numeric(df_clean[col], errors='coerce')
+                    # Vérifier si la colonne n'est pas catégorielle avant de la convertir en nombre
+                    if col not in (categorical_columns or []):
+                        df_clean[col] = pd.to_numeric(df_clean[col], errors='coerce')
                 except Exception as e:
                     st.warning(f"Erreur lors de la conversion de {col} en nombre: {str(e)}")
     
@@ -74,18 +76,35 @@ def sanitize_dataframe(df, date_columns=None, numeric_columns=None, categorical_
                     st.warning(f"Erreur lors de la conversion de {col} en catégorie: {str(e)}")
     
     # Assurer que les colonnes spécifiques sont dans les plages valides
-    if 'year' in df_clean.columns:
+    # Années (filtrer seulement si c'est numérique)
+    if 'year' in df_clean.columns and pd.api.types.is_numeric_dtype(df_clean['year']):
         df_clean = df_clean[df_clean['year'].between(1900, 2100, inclusive='both')]
-    if 'annees' in df_clean.columns:
+    if 'annees' in df_clean.columns and pd.api.types.is_numeric_dtype(df_clean['annees']):
         df_clean = df_clean[df_clean['annees'].between(1900, 2100, inclusive='both')]
+    
+    # Mois - peut être un nombre ou une chaîne en français
     if 'month' in df_clean.columns:
-        df_clean = df_clean[df_clean['month'].between(1, 12, inclusive='both')]
+        if pd.api.types.is_numeric_dtype(df_clean['month']):
+            df_clean = df_clean[df_clean['month'].between(1, 12, inclusive='both')]
     if 'mois' in df_clean.columns:
-        df_clean = df_clean[df_clean['mois'].between(1, 12, inclusive='both')]
-    if 'day' in df_clean.columns:
+        if pd.api.types.is_numeric_dtype(df_clean['mois']):
+            df_clean = df_clean[df_clean['mois'].between(1, 12, inclusive='both')]
+        else:
+            # Vérifier si mois est une chaîne en français
+            mois_valides = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 
+                          'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre']
+            df_clean = df_clean[df_clean['mois'].isin(mois_valides)]
+    
+    # Jour - peut être un nombre ou un jour de la semaine en français
+    if 'day' in df_clean.columns and pd.api.types.is_numeric_dtype(df_clean['day']):
         df_clean = df_clean[df_clean['day'].between(1, 31, inclusive='both')]
     if 'jour' in df_clean.columns:
-        df_clean = df_clean[df_clean['jour'].isin(['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'])]
+        if pd.api.types.is_numeric_dtype(df_clean['jour']):
+            df_clean = df_clean[df_clean['jour'].between(1, 31, inclusive='both')]
+        else:
+            # Vérifier si jour est un jour de la semaine en français
+            jours_valides = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche']
+            df_clean = df_clean[df_clean['jour'].isin(jours_valides)]
         
     return df_clean
 
@@ -165,8 +184,8 @@ def load_books_mois():
         # Nettoyer les données
         return sanitize_dataframe(
             df,
-            numeric_columns=['annees', 'mois', 'quantite_totale'],
-            categorical_columns=['book_title']
+            numeric_columns=['annees', 'quantite_totale', 'montant_total', 'nombre_ventes'],
+            categorical_columns=['book_title', 'book_code', 'mois']
         )
     except Exception as e:
         st.error(f"Erreur lors du chargement des données books_mois: {str(e)}")
@@ -188,8 +207,8 @@ def load_books_jour():
         # Nettoyer les données
         return sanitize_dataframe(
             df,
-            numeric_columns=['annees', 'quantite_totale'],
-            categorical_columns=['jour', 'book_title']
+            numeric_columns=['annees', 'quantite_totale', 'montant_total', 'nombre_ventes'],
+            categorical_columns=['book_title', 'book_code', 'jour', 'mois']
         )
     except Exception as e:
         st.error(f"Erreur lors du chargement des données books_jour: {str(e)}")
@@ -211,7 +230,7 @@ def load_books_annees():
         # Nettoyer les données
         return sanitize_dataframe(
             df,
-            numeric_columns=['annees', 'quantite_totale'],
+            numeric_columns=['annees', 'quantite_totale', 'montant_total', 'nombre_ventes'],
             categorical_columns=['book_title']
         )
     except Exception as e:
@@ -234,9 +253,9 @@ def load_fact_ventes():
         # Nettoyer les données
         return sanitize_dataframe(
             df,
-            date_columns=['date'] if 'date' in df.columns else [],
-            numeric_columns=['qte', 'montant', 'pu'],
-            categorical_columns=['customer_id', 'book_id']
+            date_columns=['created_at'] if 'created_at' in df.columns else [],
+            numeric_columns=['annees', 'qte', 'montant', 'pu', 'facture_id', 'livre_id'],
+            categorical_columns=['jour', 'mois', 'code']
         )
     except Exception as e:
         st.error(f"Erreur lors du chargement des données fact_ventes: {str(e)}")
@@ -258,9 +277,9 @@ def load_fact_factures():
         # Nettoyer les données
         return sanitize_dataframe(
             df,
-            date_columns=['date'] if 'date' in df.columns else [],
-            numeric_columns=['total_amount', 'total_paid', 'qte_totale'],
-            categorical_columns=['customer_id']
+            date_columns=['created_at', 'date_facturation'] if 'created_at' in df.columns else ['date_facturation'],
+            numeric_columns=['annees', 'total_amount', 'total_paid', 'qte_totale', 'facture_id', 'client_id'],
+            categorical_columns=['jour', 'mois', 'code']
         )
     except Exception as e:
         st.error(f"Erreur lors du chargement des données fact_factures: {str(e)}")
@@ -521,81 +540,115 @@ if not df.empty:
                     # Heatmap des ventes mensuelles par livre
                     st.subheader("Ventes mensuelles par livre")
                     
-                    # S'assurer que 'mois' est un entier entre 1 et 12
-                    filtered['mois'] = pd.to_numeric(filtered['mois'], errors='coerce')
-                    # Supprimer les lignes avec des valeurs de mois invalides
-                    filtered = filtered[filtered['mois'].between(1, 12)]
+                    # Créer un mapping numérique pour les mois textuels
+                    if 'mois' in filtered.columns and not pd.api.types.is_numeric_dtype(filtered['mois']):
+                        mois_mapping = {
+                            'janvier': 1, 'fevrier': 2, 'mars': 3, 'avril': 4, 'mai': 5, 'juin': 6,
+                            'juillet': 7, 'aout': 8, 'septembre': 9, 'octobre': 10, 'novembre': 11, 'decembre': 12
+                        }
+                        # Ajouter une colonne numérique pour l'ordonnancement
+                        filtered['mois_num'] = filtered['mois'].map(mois_mapping)
+                        # Trier par cette colonne
+                        filtered = filtered.sort_values('mois_num')
+                        
+                        # Créer le pivot table basé sur les noms des mois (mais trié par mois_num)
+                        pivot = filtered.pivot_table(index='mois', columns='book_title', values='quantite_totale', aggfunc='sum').fillna(0)
+                        # Réordonner l'index selon l'ordre des mois
+                        correct_order = [m for m in ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 
+                                                   'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre'] 
+                                        if m in pivot.index]
+                        pivot = pivot.reindex(correct_order)
+                        
+                        # Création des étiquettes de mois en français
+                        month_labels = pivot.index.tolist()
+                    else:
+                        # S'assurer que 'mois' est un entier entre 1 et 12
+                        filtered['mois'] = pd.to_numeric(filtered['mois'], errors='coerce')
+                        # Supprimer les lignes avec des valeurs de mois invalides
+                        filtered = filtered[filtered['mois'].between(1, 12)]
+                        
+                        if not filtered.empty:
+                            pivot = filtered.pivot_table(index='mois', columns='book_title', values='quantite_totale', aggfunc='sum').fillna(0)
+                            
+                            # Convertir les index en entiers et trier
+                            pivot.index = pd.to_numeric(pivot.index, errors='coerce')
+                            pivot = pivot.sort_index()
+                            
+                            # Création des étiquettes de mois
+                            month_labels = [calendar.month_abbr[int(m)] if 1 <= m <= 12 else f"Mois {m}" 
+                                          for m in pivot.index]
                     
-                    # Créer le pivot seulement si nous avons des données valides
-                    if not filtered.empty:
-                        pivot = filtered.pivot_table(index="mois", columns="book_title", values="quantite_totale").fillna(0)
+                    # Création d'une heatmap interactive
+                    fig = px.imshow(
+                        pivot,
+                        labels=dict(x="Livre", y="Mois", color="Quantité"),
+                        x=pivot.columns,
+                        y=month_labels,
+                        color_continuous_scale="Blues"
+                    )
+                    fig.update_layout(height=500)
+                    st.plotly_chart(fig, use_container_width=True)
+                    
+                    # Répartition des ventes par mois
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.subheader("Ventes totales par mois")
                         
-                        # Convertir les index en entiers pour s'assurer qu'ils sont utilisables avec calendar.month_abbr
-                        pivot.index = pivot.index.astype(int)
-                        
-                        # Création des étiquettes de mois de manière sécurisée
-                        month_labels = []
-                        for m in pivot.index:
-                            try:
-                                # Vérifier que l'indice est entre 1 et 12
-                                if 1 <= m <= 12:
-                                    month_labels.append(calendar.month_abbr[m])
-                                else:
-                                    month_labels.append(f"Mois {m}")  # Étiquette de secours
-                            except Exception:
-                                month_labels.append(f"Mois {m}")  # Étiquette de secours en cas d'erreur
-                        
-                        # Création d'une heatmap interactive
-                        fig = px.imshow(
-                            pivot,
-                            labels=dict(x="Livre", y="Mois", color="Quantité"),
-                            x=pivot.columns,
-                            y=month_labels,
-                            color_continuous_scale="Blues"
-                        )
-                        fig.update_layout(height=500)
-                        st.plotly_chart(fig, use_container_width=True)
-                        
-                        # Répartition des ventes par mois
-                        col1, col2 = st.columns(2)
-                        
-                        with col1:
-                            st.subheader("Ventes totales par mois")
-                            monthly_total = filtered.groupby("mois")["quantite_totale"].sum()
-                            # Trier par mois
-                            monthly_total = monthly_total.sort_index()
+                        # Agréger les ventes par mois
+                        if 'mois_num' in filtered.columns:
+                            # Utiliser la colonne numérique créée précédemment
+                            monthly_total = filtered.groupby(['mois', 'mois_num'])['quantite_totale'].sum().reset_index()
+                            monthly_total = monthly_total.sort_values('mois_num')
+                            
+                            fig = px.bar(
+                                monthly_total,
+                                x='mois',
+                                y='quantite_totale',
+                                labels={"mois": "Mois", "quantite_totale": "Quantité vendue"},
+                                color='quantite_totale',
+                                color_continuous_scale="Viridis"
+                            )
+                            # L'ordre est déjà géré par le tri sur mois_num
+                        else:
+                            monthly_total = filtered.groupby('mois')['quantite_totale'].sum()
+                            # Trier par mois si numérique
+                            if pd.api.types.is_numeric_dtype(monthly_total.index):
+                                monthly_total = monthly_total.sort_index()
                             
                             fig = px.bar(
                                 monthly_total.reset_index(),
-                                x="mois",
-                                y="quantite_totale",
+                                x='mois',
+                                y='quantite_totale',
                                 labels={"mois": "Mois", "quantite_totale": "Quantité vendue"},
-                                color="quantite_totale",
+                                color='quantite_totale',
                                 color_continuous_scale="Viridis"
                             )
-                            # Utiliser les mêmes étiquettes sécurisées pour les mois
-                            month_dict = {m: label for m, label in zip(pivot.index, month_labels)}
-                            fig.update_xaxes(
-                                tickmode='array', 
-                                tickvals=list(month_dict.keys()), 
-                                ticktext=list(month_dict.values())
-                            )
-                            st.plotly_chart(fig, use_container_width=True)
+                            
+                            # Utiliser les mêmes étiquettes de mois que pour la heatmap
+                            if pd.api.types.is_numeric_dtype(monthly_total.index):
+                                fig.update_xaxes(
+                                    tickmode='array', 
+                                    tickvals=list(range(1, 13)), 
+                                    ticktext=[calendar.month_abbr[m] for m in range(1, 13)]
+                                )
                         
-                        with col2:
-                            st.subheader("Évolution mensuelle par catégorie")
-                            # Supposons que nous avons une colonne category
-                            monthly_cat = df_filtered.groupby(["month", "category"])["quantity"].sum().reset_index()
-                            fig = px.line(
-                                monthly_cat,
-                                x="month",
-                                y="quantity",
-                                color="category",
-                                markers=True,
-                                labels={"month": "Mois", "quantity": "Quantité", "category": "Catégorie"}
-                            )
-                            fig.update_xaxes(tickmode='array', tickvals=list(range(1, 13)), ticktext=[calendar.month_abbr[m] for m in range(1, 13)])
-                            st.plotly_chart(fig, use_container_width=True)
+                        st.plotly_chart(fig, use_container_width=True)
+                    
+                    with col2:
+                        st.subheader("Évolution mensuelle par catégorie")
+                        # Supposons que nous avons une colonne category
+                        monthly_cat = df_filtered.groupby(["month", "category"])["quantity"].sum().reset_index()
+                        fig = px.line(
+                            monthly_cat,
+                            x="month",
+                            y="quantity",
+                            color="category",
+                            markers=True,
+                            labels={"month": "Mois", "quantity": "Quantité", "category": "Catégorie"}
+                        )
+                        fig.update_xaxes(tickmode='array', tickvals=list(range(1, 13)), ticktext=[calendar.month_abbr[m] for m in range(1, 13)])
+                        st.plotly_chart(fig, use_container_width=True)
                 else:
                     st.info("Aucune donnée valide de vente mensuelle trouvée pour l'année sélectionnée.")
             except Exception as e:
@@ -615,95 +668,109 @@ if not df.empty:
                 # Filtrage pour l'année sélectionnée
                 filtered = df_books_jour[df_books_jour["annees"] == year]
                 
-                # Heatmap de l'affluence par jour
-                st.subheader("Affluence par jour de la semaine")
-                
-                # Réorganisation des jours de la semaine dans l'ordre
-                jours_ordre = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
-                day_data = filtered.groupby("jour")["quantite_totale"].sum().reindex(jours_ordre).fillna(0)
-                
-                # Graphe amélioré
-                fig = px.bar(
-                    day_data.reset_index(),
-                    x="jour",
-                    y="quantite_totale",
-                    title="Quantité de livres vendus par jour de la semaine",
-                    labels={"jour": "Jour", "quantite_totale": "Quantité vendue"},
-                    color="quantite_totale",
-                    color_continuous_scale="Teal",
-                    text="quantite_totale"
-                )
-                
-                # Personnalisation
-                fig.update_layout(xaxis={'categoryorder':'array', 'categoryarray':jours_ordre})
-                fig.update_traces(texttemplate='%{text:.0f}', textposition='outside')
-                st.plotly_chart(fig, use_container_width=True)
-                
-                # Sections complémentaires
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    st.subheader("Performance horaire")
-                    # Simulons des données horaires (car elles ne sont pas dans le dataset)
-                    # Dans un cas réel, vous auriez cette information depuis votre base de données
-                    hours = list(range(8, 20))  # Heures d'ouverture, 8h à 19h
-                    dummy_hourly_data = [100, 80, 70, 120, 180, 150, 90, 110, 200, 190, 140, 70]
+                if not filtered.empty:
+                    # Heatmap de l'affluence par jour
+                    st.subheader("Affluence par jour de la semaine")
                     
-                    fig = px.line(
-                        x=hours, 
-                        y=dummy_hourly_data,
-                        labels={"x": "Heure de la journée", "y": "Ventes moyennes"},
-                        title="Répartition horaire des ventes",
-                        markers=True
-                    )
-                    fig.update_layout(xaxis=dict(tickmode='array', tickvals=hours))
-                    fig.add_annotation(
-                        text="Heures d'affluence: 12h et 18h",
-                        xref="paper", yref="paper",
-                        x=0.5, y=0.9,
-                        showarrow=False,
-                        bgcolor="rgba(255, 255, 255, 0.8)"
-                    )
-                    st.plotly_chart(fig, use_container_width=True)
-                
-                with col2:
-                    st.subheader("Comparaison Semaine vs. Weekend")
-                    # Création d'une variable weekend
-                    weekday_weekend = {
-                        'lundi': 'Semaine', 'mardi': 'Semaine', 'mercredi': 'Semaine', 
-                        'jeudi': 'Semaine', 'vendredi': 'Semaine',
-                        'samedi': 'Weekend', 'dimanche': 'Weekend'
-                    }
+                    # Réorganisation des jours de la semaine dans l'ordre
+                    jours_ordre = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
                     
-                    # Conversion des jours en semaine/weekend
-                    day_mapping = filtered.copy()
-                    day_mapping['periode'] = day_mapping['jour'].map(weekday_weekend)
-                    periode_data = day_mapping.groupby('periode')['quantite_totale'].sum()
-                    
-                    # Graphique en secteurs
-                    fig = px.pie(
-                        values=periode_data.values, 
-                        names=periode_data.index,
-                        title="Répartition Semaine vs. Weekend",
-                        color=periode_data.index,
-                        color_discrete_map={'Semaine': '#3B82F6', 'Weekend': '#F97316'},
-                        hole=0.4
-                    )
-                    fig.update_traces(textinfo='percent+label', pull=[0, 0.1])
-                    st.plotly_chart(fig, use_container_width=True)
-                    
-                    # Statistique supplémentaire
-                    if 'Weekend' in periode_data and 'Semaine' in periode_data:
-                        weekend_ratio = periode_data['Weekend'] / (periode_data['Weekend'] + periode_data['Semaine'])
-                        weekend_days = 2
-                        weekday_days = 5
-                        weekend_per_day = periode_data['Weekend'] / weekend_days if weekend_days > 0 else 0
-                        weekday_per_day = periode_data['Semaine'] / weekday_days if weekday_days > 0 else 0
+                    # Vérifier que les jours sont des textes, pas des nombres
+                    if 'jour' in filtered.columns and not pd.api.types.is_numeric_dtype(filtered['jour']):
+                        # Agréger par jour de la semaine
+                        day_data = filtered.groupby("jour")["quantite_totale"].sum()
                         
-                        st.info(f"💡 **Analyse**: Le weekend représente {weekend_ratio:.1%} des ventes totales. "
-                              f"En moyenne, un jour de weekend génère {weekend_per_day/weekday_per_day:.1f}x plus de ventes qu'un jour de semaine.")
+                        # Réindexer avec l'ordre correct des jours
+                        day_data = day_data.reindex(jours_ordre).fillna(0)
+                        
+                        # Graphe amélioré
+                        fig = px.bar(
+                            day_data.reset_index(),
+                            x="jour",
+                            y="quantite_totale",
+                            title="Quantité de livres vendus par jour de la semaine",
+                            labels={"jour": "Jour", "quantite_totale": "Quantité vendue"},
+                            color="quantite_totale",
+                            color_continuous_scale="Teal",
+                            text="quantite_totale"
+                        )
+                        
+                        # Personnalisation
+                        fig.update_layout(xaxis={'categoryorder':'array', 'categoryarray':jours_ordre})
+                        fig.update_traces(texttemplate='%{text:.0f}', textposition='outside')
+                        st.plotly_chart(fig, use_container_width=True)
+                        
+                        # Sections complémentaires
+                        col1, col2 = st.columns(2)
+                        
+                        with col1:
+                            st.subheader("Performance horaire")
+                            # Simulons des données horaires (car elles ne sont pas dans le dataset)
+                            # Dans un cas réel, vous auriez cette information depuis votre base de données
+                            hours = list(range(8, 20))  # Heures d'ouverture, 8h à 19h
+                            dummy_hourly_data = [100, 80, 70, 120, 180, 150, 90, 110, 200, 190, 140, 70]
+                            
+                            fig = px.line(
+                                x=hours, 
+                                y=dummy_hourly_data,
+                                labels={"x": "Heure de la journée", "y": "Ventes moyennes"},
+                                title="Répartition horaire des ventes",
+                                markers=True
+                            )
+                            fig.update_layout(xaxis=dict(tickmode='array', tickvals=hours))
+                            fig.add_annotation(
+                                text="Heures d'affluence: 12h et 18h",
+                                xref="paper", yref="paper",
+                                x=0.5, y=0.9,
+                                showarrow=False,
+                                bgcolor="rgba(255, 255, 255, 0.8)"
+                            )
+                            st.plotly_chart(fig, use_container_width=True)
+                        
+                        with col2:
+                            st.subheader("Comparaison Semaine vs. Weekend")
+                            # Création d'une variable weekend
+                            weekday_weekend = {
+                                'lundi': 'Semaine', 'mardi': 'Semaine', 'mercredi': 'Semaine', 
+                                'jeudi': 'Semaine', 'vendredi': 'Semaine',
+                                'samedi': 'Weekend', 'dimanche': 'Weekend'
+                            }
+                            
+                            # Conversion des jours en semaine/weekend
+                            day_mapping = filtered.copy()
+                            day_mapping['periode'] = day_mapping['jour'].map(weekday_weekend)
+                            periode_data = day_mapping.groupby('periode')['quantite_totale'].sum()
+                            
+                            # Graphique en secteurs
+                            fig = px.pie(
+                                values=periode_data.values, 
+                                names=periode_data.index,
+                                title="Répartition Semaine vs. Weekend",
+                                color=periode_data.index,
+                                color_discrete_map={'Semaine': '#3B82F6', 'Weekend': '#F97316'},
+                                hole=0.4
+                            )
+                            fig.update_traces(textinfo='percent+label', pull=[0, 0.1])
+                            st.plotly_chart(fig, use_container_width=True)
+                            
+                            # Statistique supplémentaire
+                            if 'Weekend' in periode_data and 'Semaine' in periode_data:
+                                weekend_ratio = periode_data['Weekend'] / (periode_data['Weekend'] + periode_data['Semaine'])
+                                weekend_days = 2
+                                weekday_days = 5
+                                weekend_per_day = periode_data['Weekend'] / weekend_days if weekend_days > 0 else 0
+                                weekday_per_day = periode_data['Semaine'] / weekday_days if weekday_days > 0 else 0
+                                
+                                st.info(f"💡 **Analyse**: Le weekend représente {weekend_ratio:.1%} des ventes totales. "
+                                      f"En moyenne, un jour de weekend génère {weekend_per_day/weekday_per_day:.1f}x plus de ventes qu'un jour de semaine.")
+                    else:
+                        st.warning("Les données de jours de la semaine ne sont pas dans le format attendu (jours en texte).")
+                else:
+                    st.info("Aucune donnée pour l'année sélectionnée.")
             except Exception as e:
                 st.error(f"Une erreur est survenue lors de l'affichage des données journalières: {str(e)}")
+                if st.checkbox("Afficher les détails de l'erreur", key="error_jour"):
+                    st.code(traceback.format_exc())
             
     # Vue par année (avec visualisations améliorées)
     with tabs[3]:
