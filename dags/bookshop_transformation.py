@@ -24,19 +24,19 @@ with DAG(
     # Staging transformations
     dbt_staging = BashOperator(
         task_id='dbt_staging',
-        bash_command='cd /opt/airflow/dbt && dbt run --models staging --no-partial-parse',
+        bash_command='mkdir -p /opt/airflow/dbt/target && chmod 777 /opt/airflow/dbt/target && cd /opt/airflow/dbt && dbt run --models staging --no-partial-parse',
     )
 
     # Warehouse transformations
     dbt_warehouse = BashOperator(
         task_id='dbt_warehouse',
-        bash_command='cd /opt/airflow/dbt && dbt run --models warehouse --no-partial-parse',
+        bash_command='mkdir -p /opt/airflow/dbt/target && chmod 777 /opt/airflow/dbt/target && cd /opt/airflow/dbt && dbt run --models warehouse --no-partial-parse',
     )
 
     # Marts transformations
     dbt_marts = BashOperator(
         task_id='dbt_marts',
-        bash_command='cd /opt/airflow/dbt && dbt run --models marts --no-partial-parse',
+        bash_command='mkdir -p /opt/airflow/dbt/target && chmod 777 /opt/airflow/dbt/target && cd /opt/airflow/dbt && dbt run --models marts --no-partial-parse',
     )
 
     # Set dependencies
