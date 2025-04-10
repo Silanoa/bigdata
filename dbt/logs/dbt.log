@@ -26023,3 +26023,1208 @@ SELECT
     CREATED_AT::TIMESTAMP as created_at
 FROM BOOKSHOP.RAW.FACTURES
   );
+[0m00:22:42.895182 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:22:44.941343 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.0 seconds
+[0m00:22:45.037831 [debug] [Thread-1  ]: Timing info for model.bookshop.stg_factures (execute): 00:22:42.351974 => 00:22:45.036487
+[0m00:22:45.114316 [debug] [Thread-1  ]: On model.bookshop.stg_factures: Close
+[0m00:22:45.648407 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '711f27ee-07d3-4359-a1c5-def3b11cdafe', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4dee349d90>]}
+[0m00:22:45.852793 [info ] [Thread-1  ]: 4 of 14 OK created sql view model STAGGING.stg_factures ........................ [[32mSUCCESS 1[0m in 10.20s]
+[0m00:22:45.993317 [debug] [Thread-1  ]: Finished running node model.bookshop.stg_factures
+[0m00:22:46.156360 [debug] [Thread-1  ]: Began running node model.bookshop.stg_ventes
+[0m00:22:46.198267 [info ] [Thread-1  ]: 5 of 14 START sql view model STAGGING.stg_ventes ............................... [RUN]
+[0m00:22:46.213664 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.stg_factures, now model.bookshop.stg_ventes)
+[0m00:22:46.221425 [debug] [Thread-1  ]: Began compiling node model.bookshop.stg_ventes
+[0m00:22:46.294730 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.stg_ventes"
+[0m00:22:46.403926 [debug] [Thread-1  ]: Timing info for model.bookshop.stg_ventes (compile): 00:22:46.255152 => 00:22:46.402405
+[0m00:22:46.408116 [debug] [Thread-1  ]: Began executing node model.bookshop.stg_ventes
+[0m00:22:46.462716 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.stg_ventes"
+[0m00:22:48.126650 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.stg_ventes"
+[0m00:22:48.164359 [debug] [Thread-1  ]: On model.bookshop.stg_ventes: /* {"app": "dbt", "dbt_version": "1.6.8", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.stg_ventes"} */
+create or replace   view BOOKSHOP.STAGGING.stg_ventes
+  
+   as (
+    
+
+SELECT
+    ID::INTEGER as vente_id,
+    CODE::VARCHAR(50) as reference,
+    FACTURES_ID::INTEGER as facture_id,
+    BOOKS_ID::INTEGER as livre_id,
+    QTE::INTEGER as quantite,
+    PU::DECIMAL(10,2) as prix_unitaire,
+    TO_DATE(DATE_EDIT, 'YYYYMMDD')::DATE as date_vente,
+    CREATED_AT::TIMESTAMP as created_at
+FROM BOOKSHOP.RAW.VENTES
+  );
+[0m00:22:48.194742 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:22:50.140640 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.0 seconds
+[0m00:22:50.195186 [debug] [Thread-1  ]: Timing info for model.bookshop.stg_ventes (execute): 00:22:46.416693 => 00:22:50.194283
+[0m00:22:50.233684 [debug] [Thread-1  ]: On model.bookshop.stg_ventes: Close
+[0m00:22:50.737454 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '711f27ee-07d3-4359-a1c5-def3b11cdafe', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4df0581af0>]}
+[0m00:22:50.820877 [info ] [Thread-1  ]: 5 of 14 OK created sql view model STAGGING.stg_ventes .......................... [[32mSUCCESS 1[0m in 4.53s]
+[0m00:22:50.843398 [debug] [Thread-1  ]: Finished running node model.bookshop.stg_ventes
+[0m00:22:50.855816 [debug] [Thread-1  ]: Began running node model.bookshop.dim_books
+[0m00:22:50.887120 [info ] [Thread-1  ]: 6 of 14 START sql table model WAREHOUSE.dim_books .............................. [RUN]
+[0m00:22:50.931804 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.stg_ventes, now model.bookshop.dim_books)
+[0m00:22:50.962723 [debug] [Thread-1  ]: Began compiling node model.bookshop.dim_books
+[0m00:22:51.058951 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.dim_books"
+[0m00:22:51.252112 [debug] [Thread-1  ]: Timing info for model.bookshop.dim_books (compile): 00:22:51.020186 => 00:22:51.250573
+[0m00:22:51.260400 [debug] [Thread-1  ]: Began executing node model.bookshop.dim_books
+[0m00:22:51.307731 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.dim_books"
+[0m00:22:51.808882 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.dim_books"
+[0m00:22:51.855798 [debug] [Thread-1  ]: On model.bookshop.dim_books: /* {"app": "dbt", "dbt_version": "1.6.8", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.dim_books"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.dim_books
+         as
+        (
+
+SELECT
+    id,
+    category_id,
+    code,
+    intitule,
+    isbn_10,
+    isbn_13,
+    created_at
+FROM BOOKSHOP.STAGGING.stg_books
+        );
+[0m00:22:51.893336 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:22:54.144480 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.0 seconds
+[0m00:22:54.177961 [debug] [Thread-1  ]: Timing info for model.bookshop.dim_books (execute): 00:22:51.270972 => 00:22:54.176501
+[0m00:22:54.190835 [debug] [Thread-1  ]: On model.bookshop.dim_books: Close
+[0m00:22:54.585067 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '711f27ee-07d3-4359-a1c5-def3b11cdafe', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4dee326070>]}
+[0m00:22:54.609121 [info ] [Thread-1  ]: 6 of 14 OK created sql table model WAREHOUSE.dim_books ......................... [[32mSUCCESS 1[0m in 3.66s]
+[0m00:22:54.638407 [debug] [Thread-1  ]: Finished running node model.bookshop.dim_books
+[0m00:22:54.667457 [debug] [Thread-1  ]: Began running node model.bookshop.dim_category
+[0m00:22:54.685599 [info ] [Thread-1  ]: 7 of 14 START sql table model WAREHOUSE.dim_category ........................... [RUN]
+[0m00:22:54.708086 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.dim_books, now model.bookshop.dim_category)
+[0m00:22:54.729991 [debug] [Thread-1  ]: Began compiling node model.bookshop.dim_category
+[0m00:22:54.782154 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.dim_category"
+[0m00:22:54.991989 [debug] [Thread-1  ]: Timing info for model.bookshop.dim_category (compile): 00:22:54.744412 => 00:22:54.990309
+[0m00:22:54.998152 [debug] [Thread-1  ]: Began executing node model.bookshop.dim_category
+[0m00:22:55.057191 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.dim_category"
+[0m00:22:55.150297 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.dim_category"
+[0m00:22:55.157279 [debug] [Thread-1  ]: On model.bookshop.dim_category: /* {"app": "dbt", "dbt_version": "1.6.8", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.dim_category"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.dim_category
+         as
+        (
+
+SELECT
+    id,
+    intitule,
+    created_at
+FROM BOOKSHOP.STAGGING.stg_category
+        );
+[0m00:22:55.162944 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:22:57.164638 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.0 seconds
+[0m00:22:57.275422 [debug] [Thread-1  ]: Timing info for model.bookshop.dim_category (execute): 00:22:55.019028 => 00:22:57.274183
+[0m00:22:57.318194 [debug] [Thread-1  ]: On model.bookshop.dim_category: Close
+[0m00:22:57.807348 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '711f27ee-07d3-4359-a1c5-def3b11cdafe', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4dee2a1ee0>]}
+[0m00:22:57.834580 [info ] [Thread-1  ]: 7 of 14 OK created sql table model WAREHOUSE.dim_category ...................... [[32mSUCCESS 1[0m in 3.09s]
+[0m00:22:57.850433 [debug] [Thread-1  ]: Finished running node model.bookshop.dim_category
+[0m00:22:57.883835 [debug] [Thread-1  ]: Began running node model.bookshop.dim_customers
+[0m00:22:57.904317 [info ] [Thread-1  ]: 8 of 14 START sql table model WAREHOUSE.dim_customers .......................... [RUN]
+[0m00:22:57.944696 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.dim_category, now model.bookshop.dim_customers)
+[0m00:22:57.985162 [debug] [Thread-1  ]: Began compiling node model.bookshop.dim_customers
+[0m00:22:58.031734 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.dim_customers"
+[0m00:22:58.122933 [debug] [Thread-1  ]: Timing info for model.bookshop.dim_customers (compile): 00:22:57.995231 => 00:22:58.121556
+[0m00:22:58.134790 [debug] [Thread-1  ]: Began executing node model.bookshop.dim_customers
+[0m00:22:58.168955 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.dim_customers"
+[0m00:22:58.213377 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.dim_customers"
+[0m00:22:58.218112 [debug] [Thread-1  ]: On model.bookshop.dim_customers: /* {"app": "dbt", "dbt_version": "1.6.8", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.dim_customers"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.dim_customers
+         as
+        (
+
+SELECT
+    id,
+    code,
+    first_name,
+    last_name,
+    CONCAT(first_name, ' ', last_name) as nom,
+    created_at
+FROM BOOKSHOP.STAGGING.stg_customers
+        );
+[0m00:22:58.234079 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:22:59.928658 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.0 seconds
+[0m00:22:59.942654 [debug] [Thread-1  ]: Timing info for model.bookshop.dim_customers (execute): 00:22:58.140638 => 00:22:59.941770
+[0m00:22:59.949585 [debug] [Thread-1  ]: On model.bookshop.dim_customers: Close
+[0m00:23:00.298355 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '711f27ee-07d3-4359-a1c5-def3b11cdafe', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4df04b72e0>]}
+[0m00:23:00.303432 [info ] [Thread-1  ]: 8 of 14 OK created sql table model WAREHOUSE.dim_customers ..................... [[32mSUCCESS 1[0m in 2.36s]
+[0m00:23:00.312591 [debug] [Thread-1  ]: Finished running node model.bookshop.dim_customers
+[0m00:23:00.316111 [debug] [Thread-1  ]: Began running node model.bookshop.fact_factures
+[0m00:23:00.319679 [info ] [Thread-1  ]: 9 of 14 START sql table model WAREHOUSE.fact_factures .......................... [RUN]
+[0m00:23:00.330088 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.dim_customers, now model.bookshop.fact_factures)
+[0m00:23:00.334030 [debug] [Thread-1  ]: Began compiling node model.bookshop.fact_factures
+[0m00:23:00.353199 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.fact_factures"
+[0m00:23:00.379996 [debug] [Thread-1  ]: Timing info for model.bookshop.fact_factures (compile): 00:23:00.337259 => 00:23:00.378866
+[0m00:23:00.384840 [debug] [Thread-1  ]: Began executing node model.bookshop.fact_factures
+[0m00:23:00.405738 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.fact_factures"
+[0m00:23:00.445312 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.fact_factures"
+[0m00:23:00.449673 [debug] [Thread-1  ]: On model.bookshop.fact_factures: /* {"app": "dbt", "dbt_version": "1.6.8", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.fact_factures"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.fact_factures
+         as
+        (
+
+SELECT
+--     id,
+    facture_id,
+    facture_id AS code,
+    date_facturation,
+    EXTRACT(YEAR FROM date_facturation) as annees,
+    CASE EXTRACT(MONTH FROM date_facturation)
+        WHEN 1 THEN 'janvier'
+        WHEN 2 THEN 'fevrier'
+        WHEN 3 THEN 'mars'
+        WHEN 4 THEN 'avril'
+        WHEN 5 THEN 'mai'
+        WHEN 6 THEN 'juin'
+        WHEN 7 THEN 'juillet'
+        WHEN 8 THEN 'aout'
+        WHEN 9 THEN 'septembre'
+        WHEN 10 THEN 'octobre'
+        WHEN 11 THEN 'novembre'
+        WHEN 12 THEN 'decembre'
+    END as mois,
+    CASE EXTRACT(DOW FROM date_facturation)
+        WHEN 0 THEN 'dimanche'
+        WHEN 1 THEN 'lundi'
+        WHEN 2 THEN 'mardi'
+        WHEN 3 THEN 'mercredi'
+        WHEN 4 THEN 'jeudi'
+        WHEN 5 THEN 'vendredi'
+        WHEN 6 THEN 'samedi'
+    END as jour,
+    client_id,
+    quantite_totale as qte_totale,
+    montant_ht as total_amount,
+    montant_ttc as total_paid,
+    created_at
+FROM BOOKSHOP.STAGGING.stg_factures
+        );
+[0m00:23:00.454255 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:23:02.535991 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.0 seconds
+[0m00:23:02.550576 [debug] [Thread-1  ]: Timing info for model.bookshop.fact_factures (execute): 00:23:00.388053 => 00:23:02.549678
+[0m00:23:02.555753 [debug] [Thread-1  ]: On model.bookshop.fact_factures: Close
+[0m00:23:02.898311 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '711f27ee-07d3-4359-a1c5-def3b11cdafe', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4defb7cc10>]}
+[0m00:23:02.902409 [info ] [Thread-1  ]: 9 of 14 OK created sql table model WAREHOUSE.fact_factures ..................... [[32mSUCCESS 1[0m in 2.57s]
+[0m00:23:02.910759 [debug] [Thread-1  ]: Finished running node model.bookshop.fact_factures
+[0m00:23:02.916502 [debug] [Thread-1  ]: Began running node model.bookshop.fact_ventes
+[0m00:23:02.920504 [info ] [Thread-1  ]: 10 of 14 START sql table model WAREHOUSE.fact_ventes ........................... [RUN]
+[0m00:23:02.929334 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.fact_factures, now model.bookshop.fact_ventes)
+[0m00:23:02.935365 [debug] [Thread-1  ]: Began compiling node model.bookshop.fact_ventes
+[0m00:23:02.962972 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.fact_ventes"
+[0m00:23:03.026240 [debug] [Thread-1  ]: Timing info for model.bookshop.fact_ventes (compile): 00:23:02.938807 => 00:23:03.024846
+[0m00:23:03.036679 [debug] [Thread-1  ]: Began executing node model.bookshop.fact_ventes
+[0m00:23:03.059944 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.fact_ventes"
+[0m00:23:03.102063 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.fact_ventes"
+[0m00:23:03.110674 [debug] [Thread-1  ]: On model.bookshop.fact_ventes: /* {"app": "dbt", "dbt_version": "1.6.8", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.fact_ventes"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.fact_ventes
+         as
+        (
+
+WITH source AS (
+    SELECT * FROM BOOKSHOP.STAGGING.stg_ventes
+)
+
+SELECT
+    reference as code,
+    vente_id AS id,
+    EXTRACT(YEAR FROM date_vente) AS annees,
+    CASE EXTRACT(MONTH FROM date_vente)
+        WHEN 1 THEN 'janvier'
+        WHEN 2 THEN 'fevrier'
+        WHEN 3 THEN 'mars'
+        WHEN 4 THEN 'avril'
+        WHEN 5 THEN 'mai'
+        WHEN 6 THEN 'juin'
+        WHEN 7 THEN 'juillet'
+        WHEN 8 THEN 'aout'
+        WHEN 9 THEN 'septembre'
+        WHEN 10 THEN 'octobre'
+        WHEN 11 THEN 'novembre'
+        WHEN 12 THEN 'decembre'
+        END AS mois,
+    CASE EXTRACT(DOW FROM date_vente)
+        WHEN 0 THEN 'dimanche'
+        WHEN 1 THEN 'lundi'
+        WHEN 2 THEN 'mardi'
+        WHEN 3 THEN 'mercredi'
+        WHEN 4 THEN 'jeudi'
+        WHEN 5 THEN 'vendredi'
+        WHEN 6 THEN 'samedi'
+        END AS jour,
+    prix_unitaire AS pu,
+    quantite AS qte,
+    facture_id,
+    livre_id,
+    created_at
+FROM source
+        );
+[0m00:23:03.116309 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:23:05.055236 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.0 seconds
+[0m00:23:05.073485 [debug] [Thread-1  ]: Timing info for model.bookshop.fact_ventes (execute): 00:23:03.040334 => 00:23:05.072810
+[0m00:23:05.077395 [debug] [Thread-1  ]: On model.bookshop.fact_ventes: Close
+[0m00:23:05.456015 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '711f27ee-07d3-4359-a1c5-def3b11cdafe', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4dee2d36a0>]}
+[0m00:23:05.460210 [info ] [Thread-1  ]: 10 of 14 OK created sql table model WAREHOUSE.fact_ventes ...................... [[32mSUCCESS 1[0m in 2.53s]
+[0m00:23:05.466609 [debug] [Thread-1  ]: Finished running node model.bookshop.fact_ventes
+[0m00:23:05.471672 [debug] [Thread-1  ]: Began running node model.bookshop.fact_books_annees
+[0m00:23:05.475344 [info ] [Thread-1  ]: 11 of 14 START sql table model WAREHOUSE.fact_books_annees ..................... [RUN]
+[0m00:23:05.481461 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.fact_ventes, now model.bookshop.fact_books_annees)
+[0m00:23:05.484949 [debug] [Thread-1  ]: Began compiling node model.bookshop.fact_books_annees
+[0m00:23:05.503261 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.fact_books_annees"
+[0m00:23:05.521576 [debug] [Thread-1  ]: Timing info for model.bookshop.fact_books_annees (compile): 00:23:05.487272 => 00:23:05.520469
+[0m00:23:05.524692 [debug] [Thread-1  ]: Began executing node model.bookshop.fact_books_annees
+[0m00:23:05.537095 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.fact_books_annees"
+[0m00:23:05.566813 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.fact_books_annees"
+[0m00:23:05.572024 [debug] [Thread-1  ]: On model.bookshop.fact_books_annees: /* {"app": "dbt", "dbt_version": "1.6.8", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.fact_books_annees"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.fact_books_annees
+         as
+        (
+
+SELECT
+--     b.code AS book_code,
+    b.intitule AS book_title,
+    v.annees,
+    COUNT(*) AS nombre_ventes,
+    SUM(v.qte) AS quantite_totale,
+    SUM(v.pu * v.qte) AS montant_total
+FROM BOOKSHOP.WAREHOUSE.fact_ventes v
+JOIN BOOKSHOP.WAREHOUSE.dim_books b ON v.livre_id = b.id
+GROUP BY b.code, b.intitule, v.annees
+        );
+[0m00:23:05.580903 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:23:07.577296 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.0 seconds
+[0m00:23:07.587803 [debug] [Thread-1  ]: Timing info for model.bookshop.fact_books_annees (execute): 00:23:05.527623 => 00:23:07.587118
+[0m00:23:07.590938 [debug] [Thread-1  ]: On model.bookshop.fact_books_annees: Close
+[0m00:23:07.964589 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '711f27ee-07d3-4359-a1c5-def3b11cdafe', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4df0586790>]}
+[0m00:23:07.977821 [info ] [Thread-1  ]: 11 of 14 OK created sql table model WAREHOUSE.fact_books_annees ................ [[32mSUCCESS 1[0m in 2.48s]
+[0m00:23:07.993255 [debug] [Thread-1  ]: Finished running node model.bookshop.fact_books_annees
+[0m00:23:07.998724 [debug] [Thread-1  ]: Began running node model.bookshop.fact_books_jour
+[0m00:23:08.003774 [info ] [Thread-1  ]: 12 of 14 START sql table model WAREHOUSE.fact_books_jour ....................... [RUN]
+[0m00:23:08.015717 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.fact_books_annees, now model.bookshop.fact_books_jour)
+[0m00:23:08.020754 [debug] [Thread-1  ]: Began compiling node model.bookshop.fact_books_jour
+[0m00:23:08.056599 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.fact_books_jour"
+[0m00:23:08.098748 [debug] [Thread-1  ]: Timing info for model.bookshop.fact_books_jour (compile): 00:23:08.028192 => 00:23:08.097560
+[0m00:23:08.115010 [debug] [Thread-1  ]: Began executing node model.bookshop.fact_books_jour
+[0m00:23:08.147024 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.fact_books_jour"
+[0m00:23:08.206533 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.fact_books_jour"
+[0m00:23:08.215018 [debug] [Thread-1  ]: On model.bookshop.fact_books_jour: /* {"app": "dbt", "dbt_version": "1.6.8", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.fact_books_jour"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.fact_books_jour
+         as
+        (
+
+SELECT
+--     b.id as book_id,
+    b.code AS book_code,
+    b.intitule AS book_title,
+    v.annees,
+    v.mois,
+    v.jour,
+    COUNT(*) AS nombre_ventes,
+    SUM(v.qte) AS quantite_totale,
+    SUM(v.pu * v.qte) AS montant_total
+FROM BOOKSHOP.WAREHOUSE.fact_ventes v
+JOIN BOOKSHOP.WAREHOUSE.dim_books b ON v.livre_id = b.id
+GROUP BY b.id, b.code, b.intitule, v.annees, v.mois, v.jour
+        );
+[0m00:23:08.219445 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:23:09.736435 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.0 seconds
+[0m00:23:09.746349 [debug] [Thread-1  ]: Timing info for model.bookshop.fact_books_jour (execute): 00:23:08.120389 => 00:23:09.745257
+[0m00:23:09.749657 [debug] [Thread-1  ]: On model.bookshop.fact_books_jour: Close
+[0m00:23:10.080371 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '711f27ee-07d3-4359-a1c5-def3b11cdafe', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4dee2f1970>]}
+[0m00:23:10.084274 [info ] [Thread-1  ]: 12 of 14 OK created sql table model WAREHOUSE.fact_books_jour .................. [[32mSUCCESS 1[0m in 2.07s]
+[0m00:23:10.090567 [debug] [Thread-1  ]: Finished running node model.bookshop.fact_books_jour
+[0m00:23:10.095640 [debug] [Thread-1  ]: Began running node model.bookshop.fact_books_mois
+[0m00:23:10.099194 [info ] [Thread-1  ]: 13 of 14 START sql table model WAREHOUSE.fact_books_mois ....................... [RUN]
+[0m00:23:10.106882 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.fact_books_jour, now model.bookshop.fact_books_mois)
+[0m00:23:10.111315 [debug] [Thread-1  ]: Began compiling node model.bookshop.fact_books_mois
+[0m00:23:10.132699 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.fact_books_mois"
+[0m00:23:10.152732 [debug] [Thread-1  ]: Timing info for model.bookshop.fact_books_mois (compile): 00:23:10.117325 => 00:23:10.151415
+[0m00:23:10.156168 [debug] [Thread-1  ]: Began executing node model.bookshop.fact_books_mois
+[0m00:23:10.176364 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.fact_books_mois"
+[0m00:23:10.222905 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.fact_books_mois"
+[0m00:23:10.226496 [debug] [Thread-1  ]: On model.bookshop.fact_books_mois: /* {"app": "dbt", "dbt_version": "1.6.8", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.fact_books_mois"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.fact_books_mois
+         as
+        (
+
+SELECT
+    b.id as book_id,
+    b.code AS book_code,
+    b.intitule AS book_title,
+    v.annees,
+    v.mois,
+    COUNT(*) AS nombre_ventes,
+    SUM(v.qte) AS quantite_totale,
+    SUM(v.pu * v.qte) AS montant_total
+FROM BOOKSHOP.WAREHOUSE.fact_ventes v
+JOIN BOOKSHOP.WAREHOUSE.dim_books b ON v.livre_id = b.id
+GROUP BY b.code, book_id, b.intitule, v.annees, v.mois
+        );
+[0m00:23:10.229557 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:23:11.999937 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.0 seconds
+[0m00:23:12.032155 [debug] [Thread-1  ]: Timing info for model.bookshop.fact_books_mois (execute): 00:23:10.158738 => 00:23:12.030948
+[0m00:23:12.040887 [debug] [Thread-1  ]: On model.bookshop.fact_books_mois: Close
+[0m00:23:12.580963 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '711f27ee-07d3-4359-a1c5-def3b11cdafe', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4dee317610>]}
+[0m00:23:12.607725 [info ] [Thread-1  ]: 13 of 14 OK created sql table model WAREHOUSE.fact_books_mois .................. [[32mSUCCESS 1[0m in 2.45s]
+[0m00:23:12.647552 [debug] [Thread-1  ]: Finished running node model.bookshop.fact_books_mois
+[0m00:23:12.653314 [debug] [Thread-1  ]: Began running node model.bookshop.obt_sales
+[0m00:23:12.674373 [info ] [Thread-1  ]: 14 of 14 START sql table model MARTS.obt_sales ................................. [RUN]
+[0m00:23:12.720675 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.fact_books_mois, now model.bookshop.obt_sales)
+[0m00:23:12.727091 [debug] [Thread-1  ]: Began compiling node model.bookshop.obt_sales
+[0m00:23:12.783371 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.obt_sales"
+[0m00:23:13.116480 [debug] [Thread-1  ]: Timing info for model.bookshop.obt_sales (compile): 00:23:12.731140 => 00:23:13.114973
+[0m00:23:13.180049 [debug] [Thread-1  ]: Began executing node model.bookshop.obt_sales
+[0m00:23:13.245353 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.obt_sales"
+[0m00:23:13.440924 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.obt_sales"
+[0m00:23:13.467674 [debug] [Thread-1  ]: On model.bookshop.obt_sales: /* {"app": "dbt", "dbt_version": "1.6.8", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.obt_sales"} */
+create or replace transient table BOOKSHOP.MARTS.obt_sales
+         as
+        (
+
+WITH ventes AS (
+    SELECT * FROM BOOKSHOP.WAREHOUSE.fact_ventes
+),
+factures AS (
+    SELECT * FROM BOOKSHOP.WAREHOUSE.fact_factures
+),
+category AS (
+    SELECT * FROM BOOKSHOP.WAREHOUSE.dim_category
+),
+books AS (
+    SELECT * FROM BOOKSHOP.WAREHOUSE.dim_books
+),
+customers AS (
+    SELECT * FROM BOOKSHOP.WAREHOUSE.dim_customers
+)
+
+SELECT
+    v.id,
+    v.annees,
+    v.mois,
+    v.jour,
+    v.pu,
+    v.qte,
+    f.facture_id as facture_id,
+    f.code as facture_code,
+    f.qte_totale,
+    f.total_amount,
+    f.total_paid,
+    c.intitule as category_intitule,
+    b.code as book_code,
+    b.intitule as book_intitule,
+    b.isbn_10,
+    b.isbn_13,
+    cu.code as customer_code,
+    cu.nom as customer_nom
+FROM ventes v
+JOIN factures f ON v.facture_id = f.facture_id
+JOIN books b ON v.livre_id = b.id
+JOIN category c ON b.category_id = c.id
+JOIN customers cu ON f.client_id = cu.id
+        );
+[0m00:23:13.499970 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:23:15.480618 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.0 seconds
+[0m00:23:15.496062 [debug] [Thread-1  ]: Timing info for model.bookshop.obt_sales (execute): 00:23:13.198975 => 00:23:15.495153
+[0m00:23:15.502844 [debug] [Thread-1  ]: On model.bookshop.obt_sales: Close
+[0m00:23:15.868355 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '711f27ee-07d3-4359-a1c5-def3b11cdafe', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4df04ba070>]}
+[0m00:23:15.876161 [info ] [Thread-1  ]: 14 of 14 OK created sql table model MARTS.obt_sales ............................ [[32mSUCCESS 1[0m in 3.15s]
+[0m00:23:15.886883 [debug] [Thread-1  ]: Finished running node model.bookshop.obt_sales
+[0m00:23:15.899138 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m00:23:15.903861 [debug] [MainThread]: Connection 'model.bookshop.obt_sales' was properly closed.
+[0m00:23:15.913394 [info ] [MainThread]: 
+[0m00:23:15.920454 [info ] [MainThread]: Finished running 12 table models, 2 view models in 0 hours 1 minutes and 17.51 seconds (77.51s).
+[0m00:23:15.957482 [debug] [MainThread]: Command end result
+[0m00:23:16.133135 [info ] [MainThread]: 
+[0m00:23:16.148055 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m00:23:16.172488 [info ] [MainThread]: 
+[0m00:23:16.195042 [info ] [MainThread]: Done. PASS=14 WARN=0 ERROR=0 SKIP=0 TOTAL=14
+[0m00:23:16.222895 [debug] [MainThread]: Command `dbt run` succeeded at 00:23:16.222129 after 95.54 seconds
+[0m00:23:16.244748 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4df4eb8340>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4dee2a1ee0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4dee2d36a0>]}
+[0m00:23:16.254737 [debug] [MainThread]: Flushing usage events
+[0m00:25:02.321223 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f1518d49310>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f1516be68b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f15179949a0>]}
+
+
+============================== 00:25:02.339492 | 7e49e4db-b8bc-4cbd-afa6-d71bd421be6e ==============================
+[0m00:25:02.339492 [info ] [MainThread]: Running with dbt=1.8.7
+[0m00:25:02.342736 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'log_cache_events': 'False', 'write_json': 'True', 'partial_parse': 'False', 'cache_selected_only': 'False', 'warn_error': 'None', 'version_check': 'True', 'fail_fast': 'False', 'log_path': '/opt/airflow/dbt/logs', 'profiles_dir': '/opt/airflow/dbt', 'debug': 'False', 'use_colors': 'True', 'use_experimental_parser': 'False', 'no_print': 'None', 'quiet': 'False', 'empty': 'False', 'log_format': 'default', 'introspect': 'True', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'static_parser': 'True', 'target_path': 'None', 'invocation_command': 'dbt run --models staging --no-partial-parse', 'send_anonymous_usage_stats': 'True'}
+[0m00:25:05.729501 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '7e49e4db-b8bc-4cbd-afa6-d71bd421be6e', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f150463c1c0>]}
+[0m00:25:05.976076 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '7e49e4db-b8bc-4cbd-afa6-d71bd421be6e', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f150458aee0>]}
+[0m00:25:05.978942 [info ] [MainThread]: Registered adapter: snowflake=1.8.4
+[0m00:25:06.086842 [debug] [MainThread]: checksum: 4af21dafb485259c48497ac86b711ddb1982f3d0f1c0ca4e09356de488b753c0, vars: {}, profile: , target: , version: 1.8.7
+[0m00:25:06.098306 [debug] [MainThread]: Partial parsing not enabled
+[0m00:25:14.207211 [warn ] [MainThread]: [[33mWARNING[0m]: Deprecated functionality
+The `tests` config has been renamed to `data_tests`. Please see
+https://docs.getdbt.com/docs/build/data-tests#new-data_tests-syntax for more
+information.
+[0m00:25:14.212186 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'deprecation', 'label': '7e49e4db-b8bc-4cbd-afa6-d71bd421be6e', 'property_': 'warn', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f15040d72b0>]}
+[0m00:25:15.987428 [error] [MainThread]: Encountered an error:
+[Errno 13] Permission denied: '/opt/airflow/dbt/target/partial_parse.msgpack'
+[0m00:25:15.999043 [error] [MainThread]: Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/cli/requires.py", line 138, in wrapper
+    result, success = func(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/cli/requires.py", line 101, in wrapper
+    return func(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/cli/requires.py", line 218, in wrapper
+    return func(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/cli/requires.py", line 247, in wrapper
+    return func(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/cli/requires.py", line 294, in wrapper
+    return func(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/cli/requires.py", line 320, in wrapper
+    ctx.obj["manifest"] = parse_manifest(
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/parser/manifest.py", line 1898, in parse_manifest
+    manifest = ManifestLoader.get_full_manifest(
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/parser/manifest.py", line 330, in get_full_manifest
+    manifest = loader.load()
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/parser/manifest.py", line 525, in load
+    self.write_manifest_for_partial_parse()
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/parser/manifest.py", line 813, in write_manifest_for_partial_parse
+    with open(path, "wb") as fp:
+PermissionError: [Errno 13] Permission denied: '/opt/airflow/dbt/target/partial_parse.msgpack'
+
+[0m00:25:16.005238 [debug] [MainThread]: Resource report: {"command_name": "run", "command_wall_clock_time": 13.987871, "process_user_time": 22.068941, "process_kernel_time": 3.381941, "process_mem_max_rss": "195896", "process_in_blocks": "8", "command_success": false, "process_out_blocks": "0"}
+[0m00:25:16.013443 [debug] [MainThread]: Command `dbt run` failed at 00:25:16.007988 after 13.99 seconds
+[0m00:25:16.016174 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f1518d49310>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f14efef9cd0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f15043d0ee0>]}
+[0m00:25:16.019427 [debug] [MainThread]: Flushing usage events
+[0m00:30:38.074010 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f89f1156250>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f89ef4cc430>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f89ef4ccca0>]}
+
+
+============================== 00:30:38.088739 | e406498b-5cfd-4efe-ab10-beeb14265895 ==============================
+[0m00:30:38.088739 [info ] [MainThread]: Running with dbt=1.8.7
+[0m00:30:38.090857 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'write_json': 'True', 'log_cache_events': 'False', 'partial_parse': 'False', 'cache_selected_only': 'False', 'warn_error': 'None', 'fail_fast': 'False', 'version_check': 'True', 'log_path': '/opt/airflow/dbt/logs', 'debug': 'False', 'profiles_dir': '/opt/airflow/dbt', 'use_colors': 'True', 'use_experimental_parser': 'False', 'no_print': 'None', 'quiet': 'False', 'empty': 'False', 'log_format': 'default', 'invocation_command': 'dbt run --models staging --no-partial-parse', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'target_path': 'None', 'introspect': 'True', 'send_anonymous_usage_stats': 'True'}
+[0m00:30:40.844165 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': 'e406498b-5cfd-4efe-ab10-beeb14265895', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f89dcab6910>]}
+[0m00:30:41.155176 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': 'e406498b-5cfd-4efe-ab10-beeb14265895', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f89dc98ad00>]}
+[0m00:30:41.159521 [info ] [MainThread]: Registered adapter: snowflake=1.8.4
+[0m00:30:41.263147 [debug] [MainThread]: checksum: 4af21dafb485259c48497ac86b711ddb1982f3d0f1c0ca4e09356de488b753c0, vars: {}, profile: , target: , version: 1.8.7
+[0m00:30:41.273985 [debug] [MainThread]: Partial parsing not enabled
+[0m00:31:14.207257 [warn ] [MainThread]: [[33mWARNING[0m]: Deprecated functionality
+The `tests` config has been renamed to `data_tests`. Please see
+https://docs.getdbt.com/docs/build/data-tests#new-data_tests-syntax for more
+information.
+[0m00:31:14.256219 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'deprecation', 'label': 'e406498b-5cfd-4efe-ab10-beeb14265895', 'property_': 'warn', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f89dc47e580>]}
+[0m00:31:18.207338 [error] [MainThread]: Encountered an error:
+[Errno 13] Permission denied: '/opt/airflow/dbt/target/partial_parse.msgpack'
+[0m00:31:18.212879 [error] [MainThread]: Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/cli/requires.py", line 138, in wrapper
+    result, success = func(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/cli/requires.py", line 101, in wrapper
+    return func(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/cli/requires.py", line 218, in wrapper
+    return func(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/cli/requires.py", line 247, in wrapper
+    return func(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/cli/requires.py", line 294, in wrapper
+    return func(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/cli/requires.py", line 320, in wrapper
+    ctx.obj["manifest"] = parse_manifest(
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/parser/manifest.py", line 1898, in parse_manifest
+    manifest = ManifestLoader.get_full_manifest(
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/parser/manifest.py", line 330, in get_full_manifest
+    manifest = loader.load()
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/parser/manifest.py", line 525, in load
+    self.write_manifest_for_partial_parse()
+  File "/home/airflow/.local/lib/python3.8/site-packages/dbt/parser/manifest.py", line 813, in write_manifest_for_partial_parse
+    with open(path, "wb") as fp:
+PermissionError: [Errno 13] Permission denied: '/opt/airflow/dbt/target/partial_parse.msgpack'
+
+[0m00:31:18.226890 [debug] [MainThread]: Resource report: {"command_name": "run", "command_wall_clock_time": 40.361877, "process_user_time": 42.218567, "process_kernel_time": 5.449212, "process_mem_max_rss": "195712", "command_success": false, "process_in_blocks": "0", "process_out_blocks": "0"}
+[0m00:31:18.232151 [debug] [MainThread]: Command `dbt run` failed at 00:31:18.231572 after 40.37 seconds
+[0m00:31:18.238924 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f89f1156250>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f89dc17d4f0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f89dc17da90>]}
+[0m00:31:18.244994 [debug] [MainThread]: Flushing usage events
+[0m00:51:05.675416 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb0339e5250>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb031808340>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb0318089d0>]}
+
+
+============================== 00:51:05.770965 | 9e6e0a96-72d0-4efc-8323-6eadb4b7b644 ==============================
+[0m00:51:05.770965 [info ] [MainThread]: Running with dbt=1.8.7
+[0m00:51:05.809823 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'write_json': 'True', 'log_cache_events': 'False', 'partial_parse': 'False', 'cache_selected_only': 'False', 'profiles_dir': '/opt/airflow/dbt', 'debug': 'False', 'version_check': 'True', 'log_path': '/opt/airflow/dbt/logs', 'fail_fast': 'False', 'warn_error': 'None', 'use_colors': 'True', 'use_experimental_parser': 'False', 'no_print': 'None', 'quiet': 'False', 'empty': 'False', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'invocation_command': 'dbt run --models staging --no-partial-parse --target-path /tmp/dbt_target', 'introspect': 'True', 'log_format': 'default', 'target_path': '/tmp/dbt_target', 'static_parser': 'True', 'send_anonymous_usage_stats': 'True'}
+[0m00:51:28.206818 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '9e6e0a96-72d0-4efc-8323-6eadb4b7b644', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb033781460>]}
+[0m00:51:29.426726 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '9e6e0a96-72d0-4efc-8323-6eadb4b7b644', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb01b205d00>]}
+[0m00:51:29.450708 [info ] [MainThread]: Registered adapter: snowflake=1.8.4
+[0m00:51:29.716139 [debug] [MainThread]: checksum: 4af21dafb485259c48497ac86b711ddb1982f3d0f1c0ca4e09356de488b753c0, vars: {}, profile: , target: , version: 1.8.7
+[0m00:51:29.749963 [debug] [MainThread]: Partial parsing not enabled
+[0m00:52:18.353131 [warn ] [MainThread]: [[33mWARNING[0m]: Deprecated functionality
+The `tests` config has been renamed to `data_tests`. Please see
+https://docs.getdbt.com/docs/build/data-tests#new-data_tests-syntax for more
+information.
+[0m00:52:18.367432 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'deprecation', 'label': '9e6e0a96-72d0-4efc-8323-6eadb4b7b644', 'property_': 'warn', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb01ace6d60>]}
+[0m00:52:38.520134 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '9e6e0a96-72d0-4efc-8323-6eadb4b7b644', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb01a945b50>]}
+[0m00:52:43.742744 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '9e6e0a96-72d0-4efc-8323-6eadb4b7b644', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb01a9e28e0>]}
+[0m00:52:43.757389 [info ] [MainThread]: Found 14 models, 38 data tests, 10 sources, 468 macros
+[0m00:52:43.760912 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '9e6e0a96-72d0-4efc-8323-6eadb4b7b644', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb01a8f3be0>]}
+[0m00:52:43.792976 [info ] [MainThread]: 
+[0m00:52:43.809129 [debug] [MainThread]: Acquiring new snowflake connection 'master'
+[0m00:52:43.892234 [debug] [ThreadPool]: Acquiring new snowflake connection 'list_BOOKSHOP'
+[0m00:52:44.114245 [debug] [ThreadPool]: Using snowflake connection "list_BOOKSHOP"
+[0m00:52:44.117625 [debug] [ThreadPool]: On list_BOOKSHOP: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "connection_name": "list_BOOKSHOP"} */
+show terse schemas in database BOOKSHOP
+    limit 10000
+[0m00:52:44.130188 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m00:52:48.953176 [debug] [ThreadPool]: SQL status: SUCCESS 6 in 4.822 seconds
+[0m00:52:48.986728 [debug] [ThreadPool]: On list_BOOKSHOP: Close
+[0m00:52:49.501376 [debug] [ThreadPool]: Acquiring new snowflake connection 'list_BOOKSHOP_WAREHOUSE'
+[0m00:52:49.658216 [debug] [ThreadPool]: Using snowflake connection "list_BOOKSHOP_WAREHOUSE"
+[0m00:52:49.663592 [debug] [ThreadPool]: On list_BOOKSHOP_WAREHOUSE: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "connection_name": "list_BOOKSHOP_WAREHOUSE"} */
+show objects in BOOKSHOP.WAREHOUSE limit 10000
+[0m00:52:49.673938 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m00:52:51.328597 [debug] [ThreadPool]: SQL status: SUCCESS 8 in 1.655 seconds
+[0m00:52:51.390522 [debug] [ThreadPool]: On list_BOOKSHOP_WAREHOUSE: Close
+[0m00:52:52.171728 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_BOOKSHOP_WAREHOUSE, now list_BOOKSHOP_MARTS)
+[0m00:52:52.660968 [debug] [ThreadPool]: Using snowflake connection "list_BOOKSHOP_MARTS"
+[0m00:52:52.720104 [debug] [ThreadPool]: On list_BOOKSHOP_MARTS: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "connection_name": "list_BOOKSHOP_MARTS"} */
+show objects in BOOKSHOP.MARTS limit 10000
+[0m00:52:52.761494 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m00:52:54.595598 [debug] [ThreadPool]: SQL status: SUCCESS 1 in 1.822 seconds
+[0m00:52:54.639465 [debug] [ThreadPool]: On list_BOOKSHOP_MARTS: Close
+[0m00:52:55.235194 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_BOOKSHOP_MARTS, now list_BOOKSHOP_STAGGING)
+[0m00:52:55.311493 [debug] [ThreadPool]: Using snowflake connection "list_BOOKSHOP_STAGGING"
+[0m00:52:55.343660 [debug] [ThreadPool]: On list_BOOKSHOP_STAGGING: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "connection_name": "list_BOOKSHOP_STAGGING"} */
+show objects in BOOKSHOP.STAGGING limit 10000
+[0m00:52:55.392233 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m00:52:57.733866 [debug] [ThreadPool]: SQL status: SUCCESS 5 in 2.342 seconds
+[0m00:52:57.805275 [debug] [ThreadPool]: On list_BOOKSHOP_STAGGING: Close
+[0m00:52:58.484699 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '9e6e0a96-72d0-4efc-8323-6eadb4b7b644', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb01abb4be0>]}
+[0m00:52:58.506915 [info ] [MainThread]: Concurrency: 1 threads (target='dev')
+[0m00:52:58.564425 [info ] [MainThread]: 
+[0m00:52:58.820803 [debug] [Thread-1  ]: Began running node model.bookshop.stg_books
+[0m00:52:58.892986 [info ] [Thread-1  ]: 1 of 5 START sql table model STAGGING.stg_books ................................ [RUN]
+[0m00:52:58.902523 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly list_BOOKSHOP_STAGGING, now model.bookshop.stg_books)
+[0m00:52:58.907380 [debug] [Thread-1  ]: Began compiling node model.bookshop.stg_books
+[0m00:52:59.196422 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.stg_books"
+[0m00:52:59.300088 [debug] [Thread-1  ]: Began executing node model.bookshop.stg_books
+[0m00:52:59.728893 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.stg_books"
+[0m00:52:59.783667 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.stg_books"
+[0m00:52:59.799278 [debug] [Thread-1  ]: On model.bookshop.stg_books: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.stg_books"} */
+create or replace transient table BOOKSHOP.STAGGING.stg_books
+         as
+        (
+
+SELECT
+    ID,
+    CODE,
+    INTITULE,
+    ISBN_10,
+    ISBN_13,
+    CATEGORY_ID,
+    CREATED_AT
+FROM BOOKSHOP.RAW.BOOKS
+        );
+[0m00:52:59.831522 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:53:02.790415 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.959 seconds
+[0m00:53:03.086082 [debug] [Thread-1  ]: On model.bookshop.stg_books: Close
+[0m00:53:03.523643 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '9e6e0a96-72d0-4efc-8323-6eadb4b7b644', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb0339de490>]}
+[0m00:53:03.538896 [info ] [Thread-1  ]: 1 of 5 OK created sql table model STAGGING.stg_books ........................... [[32mSUCCESS 1[0m in 4.60s]
+[0m00:53:03.554439 [debug] [Thread-1  ]: Finished running node model.bookshop.stg_books
+[0m00:53:03.581698 [debug] [Thread-1  ]: Began running node model.bookshop.stg_category
+[0m00:53:03.590785 [info ] [Thread-1  ]: 2 of 5 START sql table model STAGGING.stg_category ............................. [RUN]
+[0m00:53:03.597250 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.stg_books, now model.bookshop.stg_category)
+[0m00:53:03.602247 [debug] [Thread-1  ]: Began compiling node model.bookshop.stg_category
+[0m00:53:03.629409 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.stg_category"
+[0m00:53:03.644657 [debug] [Thread-1  ]: Began executing node model.bookshop.stg_category
+[0m00:53:03.677590 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.stg_category"
+[0m00:53:03.688888 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.stg_category"
+[0m00:53:03.693244 [debug] [Thread-1  ]: On model.bookshop.stg_category: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.stg_category"} */
+create or replace transient table BOOKSHOP.STAGGING.stg_category
+         as
+        (
+
+SELECT
+    ID,
+--     CODE,
+    INTITULE,
+    CREATED_AT
+FROM BOOKSHOP.RAW.CATEGORY
+        );
+[0m00:53:03.703606 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:53:06.703292 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 3.005 seconds
+[0m00:53:06.852878 [debug] [Thread-1  ]: On model.bookshop.stg_category: Close
+[0m00:53:07.463502 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '9e6e0a96-72d0-4efc-8323-6eadb4b7b644', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb019407610>]}
+[0m00:53:07.493191 [info ] [Thread-1  ]: 2 of 5 OK created sql table model STAGGING.stg_category ........................ [[32mSUCCESS 1[0m in 3.85s]
+[0m00:53:07.572732 [debug] [Thread-1  ]: Finished running node model.bookshop.stg_category
+[0m00:53:07.715074 [debug] [Thread-1  ]: Began running node model.bookshop.stg_customers
+[0m00:53:07.740262 [info ] [Thread-1  ]: 3 of 5 START sql table model STAGGING.stg_customers ............................ [RUN]
+[0m00:53:07.783417 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.stg_category, now model.bookshop.stg_customers)
+[0m00:53:07.837816 [debug] [Thread-1  ]: Began compiling node model.bookshop.stg_customers
+[0m00:53:07.896371 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.stg_customers"
+[0m00:53:07.938913 [debug] [Thread-1  ]: Began executing node model.bookshop.stg_customers
+[0m00:53:07.991407 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.stg_customers"
+[0m00:53:08.017610 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.stg_customers"
+[0m00:53:08.031509 [debug] [Thread-1  ]: On model.bookshop.stg_customers: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.stg_customers"} */
+create or replace transient table BOOKSHOP.STAGGING.stg_customers
+         as
+        (
+
+SELECT
+    ID,
+    CODE,
+    FIRST_NAME,
+    LAST_NAME,
+--     EMAIL,
+    CREATED_AT
+FROM BOOKSHOP.RAW.CUSTOMERS
+        );
+[0m00:53:08.049978 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:53:11.306356 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 3.256 seconds
+[0m00:53:11.385508 [debug] [Thread-1  ]: On model.bookshop.stg_customers: Close
+[0m00:53:12.118613 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '9e6e0a96-72d0-4efc-8323-6eadb4b7b644', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb019556190>]}
+[0m00:53:12.142536 [info ] [Thread-1  ]: 3 of 5 OK created sql table model STAGGING.stg_customers ....................... [[32mSUCCESS 1[0m in 4.33s]
+[0m00:53:12.153223 [debug] [Thread-1  ]: Finished running node model.bookshop.stg_customers
+[0m00:53:12.171747 [debug] [Thread-1  ]: Began running node model.bookshop.stg_factures
+[0m00:53:12.189276 [info ] [Thread-1  ]: 4 of 5 START sql view model STAGGING.stg_factures .............................. [RUN]
+[0m00:53:12.199505 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.stg_customers, now model.bookshop.stg_factures)
+[0m00:53:12.203592 [debug] [Thread-1  ]: Began compiling node model.bookshop.stg_factures
+[0m00:53:12.277695 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.stg_factures"
+[0m00:53:12.293091 [debug] [Thread-1  ]: Began executing node model.bookshop.stg_factures
+[0m00:53:12.725450 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.stg_factures"
+[0m00:53:12.761386 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.stg_factures"
+[0m00:53:12.777663 [debug] [Thread-1  ]: On model.bookshop.stg_factures: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.stg_factures"} */
+create or replace   view BOOKSHOP.STAGGING.stg_factures
+  
+   as (
+    
+
+SELECT
+    ID::INTEGER as facture_id,
+    CODE::VARCHAR(50) as reference,
+    CUSTOMERS_ID::INTEGER as client_id,
+    QTE_TOTALE::DECIMAL(10,2) as quantite_totale,
+    TOTAL_AMOUNT::DECIMAL(12,2) as montant_ht,
+    TOTAL_PAID::DECIMAL(12,2) as montant_ttc,
+    TO_DATE(DATE_EDIT, 'YYYYMMDD')::DATE as date_facturation,
+    CREATED_AT::TIMESTAMP as created_at
+FROM BOOKSHOP.RAW.FACTURES
+  );
+[0m00:53:12.786117 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:53:14.857501 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.075 seconds
+[0m00:53:14.897203 [debug] [Thread-1  ]: On model.bookshop.stg_factures: Close
+[0m00:53:15.513739 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '9e6e0a96-72d0-4efc-8323-6eadb4b7b644', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb019556400>]}
+[0m00:53:15.538508 [info ] [Thread-1  ]: 4 of 5 OK created sql view model STAGGING.stg_factures ......................... [[32mSUCCESS 1[0m in 3.31s]
+[0m00:53:15.564326 [debug] [Thread-1  ]: Finished running node model.bookshop.stg_factures
+[0m00:53:15.597780 [debug] [Thread-1  ]: Began running node model.bookshop.stg_ventes
+[0m00:53:15.608617 [info ] [Thread-1  ]: 5 of 5 START sql view model STAGGING.stg_ventes ................................ [RUN]
+[0m00:53:15.623070 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.stg_factures, now model.bookshop.stg_ventes)
+[0m00:53:15.639636 [debug] [Thread-1  ]: Began compiling node model.bookshop.stg_ventes
+[0m00:53:15.700129 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.stg_ventes"
+[0m00:53:15.722344 [debug] [Thread-1  ]: Began executing node model.bookshop.stg_ventes
+[0m00:53:15.780007 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.stg_ventes"
+[0m00:53:15.808683 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.stg_ventes"
+[0m00:53:15.823326 [debug] [Thread-1  ]: On model.bookshop.stg_ventes: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.stg_ventes"} */
+create or replace   view BOOKSHOP.STAGGING.stg_ventes
+  
+   as (
+    
+
+SELECT
+    ID::INTEGER as vente_id,
+    CODE::VARCHAR(50) as reference,
+    FACTURES_ID::INTEGER as facture_id,
+    BOOKS_ID::INTEGER as livre_id,
+    QTE::INTEGER as quantite,
+    PU::DECIMAL(10,2) as prix_unitaire,
+    TO_DATE(DATE_EDIT, 'YYYYMMDD')::DATE as date_vente,
+    CREATED_AT::TIMESTAMP as created_at
+FROM BOOKSHOP.RAW.VENTES
+  );
+[0m00:53:15.826959 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:53:18.408134 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.581 seconds
+[0m00:53:18.441268 [debug] [Thread-1  ]: On model.bookshop.stg_ventes: Close
+[0m00:53:18.889094 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '9e6e0a96-72d0-4efc-8323-6eadb4b7b644', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb019556190>]}
+[0m00:53:18.907560 [info ] [Thread-1  ]: 5 of 5 OK created sql view model STAGGING.stg_ventes ........................... [[32mSUCCESS 1[0m in 3.25s]
+[0m00:53:18.925317 [debug] [Thread-1  ]: Finished running node model.bookshop.stg_ventes
+[0m00:53:18.959526 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m00:53:18.968763 [debug] [MainThread]: Connection 'list_BOOKSHOP' was properly closed.
+[0m00:53:19.007182 [debug] [MainThread]: Connection 'model.bookshop.stg_ventes' was properly closed.
+[0m00:53:19.038469 [info ] [MainThread]: 
+[0m00:53:19.056423 [info ] [MainThread]: Finished running 3 table models, 2 view models in 0 hours 0 minutes and 35.23 seconds (35.23s).
+[0m00:53:19.076656 [debug] [MainThread]: Command end result
+[0m00:53:20.036589 [info ] [MainThread]: 
+[0m00:53:20.046908 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m00:53:20.056311 [info ] [MainThread]: 
+[0m00:53:20.071941 [info ] [MainThread]: Done. PASS=5 WARN=0 ERROR=0 SKIP=0 TOTAL=5
+[0m00:53:20.087063 [debug] [MainThread]: Resource report: {"command_name": "run", "command_success": true, "command_wall_clock_time": 138.39378, "process_user_time": 86.86689, "process_kernel_time": 26.66809, "process_mem_max_rss": "210556", "process_in_blocks": "16", "process_out_blocks": "3632"}
+[0m00:53:20.091832 [debug] [MainThread]: Command `dbt run` succeeded at 00:53:20.091115 after 138.41 seconds
+[0m00:53:20.105871 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb0339e5250>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb033651820>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7fb01a8f3ca0>]}
+[0m00:53:20.109664 [debug] [MainThread]: Flushing usage events
+[0m00:54:08.115769 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f914135d220>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f913f16e340>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f913f16e9d0>]}
+
+
+============================== 00:54:08.178665 | 92ab3fc4-730c-4731-bc3e-00f7b5b12fc4 ==============================
+[0m00:54:08.178665 [info ] [MainThread]: Running with dbt=1.8.7
+[0m00:54:08.184841 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'write_json': 'True', 'log_cache_events': 'False', 'partial_parse': 'False', 'cache_selected_only': 'False', 'profiles_dir': '/opt/airflow/dbt', 'version_check': 'True', 'fail_fast': 'False', 'log_path': '/opt/airflow/dbt/logs', 'debug': 'False', 'warn_error': 'None', 'use_colors': 'True', 'use_experimental_parser': 'False', 'empty': 'False', 'quiet': 'False', 'no_print': 'None', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'invocation_command': 'dbt run --models warehouse --no-partial-parse --target-path /tmp/dbt_target', 'introspect': 'True', 'static_parser': 'True', 'target_path': '/tmp/dbt_target', 'log_format': 'default', 'send_anonymous_usage_stats': 'True'}
+[0m00:54:15.288956 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '92ab3fc4-730c-4731-bc3e-00f7b5b12fc4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f91410e9460>]}
+[0m00:54:15.528883 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '92ab3fc4-730c-4731-bc3e-00f7b5b12fc4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f912cb79d00>]}
+[0m00:54:15.532163 [info ] [MainThread]: Registered adapter: snowflake=1.8.4
+[0m00:54:15.612238 [debug] [MainThread]: checksum: 4af21dafb485259c48497ac86b711ddb1982f3d0f1c0ca4e09356de488b753c0, vars: {}, profile: , target: , version: 1.8.7
+[0m00:54:15.620350 [debug] [MainThread]: Partial parsing not enabled
+[0m00:54:24.937605 [warn ] [MainThread]: [[33mWARNING[0m]: Deprecated functionality
+The `tests` config has been renamed to `data_tests`. Please see
+https://docs.getdbt.com/docs/build/data-tests#new-data_tests-syntax for more
+information.
+[0m00:54:24.939458 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'deprecation', 'label': '92ab3fc4-730c-4731-bc3e-00f7b5b12fc4', 'property_': 'warn', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f912c65ad60>]}
+[0m00:54:26.296666 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '92ab3fc4-730c-4731-bc3e-00f7b5b12fc4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f912c2b9b50>]}
+[0m00:54:27.074550 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '92ab3fc4-730c-4731-bc3e-00f7b5b12fc4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f912c404eb0>]}
+[0m00:54:27.077051 [info ] [MainThread]: Found 14 models, 38 data tests, 10 sources, 468 macros
+[0m00:54:27.078952 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '92ab3fc4-730c-4731-bc3e-00f7b5b12fc4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f912c267a60>]}
+[0m00:54:27.086412 [info ] [MainThread]: 
+[0m00:54:27.089428 [debug] [MainThread]: Acquiring new snowflake connection 'master'
+[0m00:54:27.107837 [debug] [ThreadPool]: Acquiring new snowflake connection 'list_BOOKSHOP'
+[0m00:54:27.159404 [debug] [ThreadPool]: Using snowflake connection "list_BOOKSHOP"
+[0m00:54:27.161422 [debug] [ThreadPool]: On list_BOOKSHOP: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "connection_name": "list_BOOKSHOP"} */
+show terse schemas in database BOOKSHOP
+    limit 10000
+[0m00:54:27.163643 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m00:54:30.621777 [debug] [ThreadPool]: SQL status: SUCCESS 6 in 3.448 seconds
+[0m00:54:30.654097 [debug] [ThreadPool]: On list_BOOKSHOP: Close
+[0m00:54:31.089222 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_BOOKSHOP, now list_BOOKSHOP_WAREHOUSE)
+[0m00:54:31.188236 [debug] [ThreadPool]: Using snowflake connection "list_BOOKSHOP_WAREHOUSE"
+[0m00:54:31.191616 [debug] [ThreadPool]: On list_BOOKSHOP_WAREHOUSE: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "connection_name": "list_BOOKSHOP_WAREHOUSE"} */
+show objects in BOOKSHOP.WAREHOUSE limit 10000
+[0m00:54:31.195032 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m00:54:32.672235 [debug] [ThreadPool]: SQL status: SUCCESS 8 in 1.477 seconds
+[0m00:54:32.692116 [debug] [ThreadPool]: On list_BOOKSHOP_WAREHOUSE: Close
+[0m00:54:33.096803 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_BOOKSHOP_WAREHOUSE, now list_BOOKSHOP_STAGGING)
+[0m00:54:33.135836 [debug] [ThreadPool]: Using snowflake connection "list_BOOKSHOP_STAGGING"
+[0m00:54:33.140689 [debug] [ThreadPool]: On list_BOOKSHOP_STAGGING: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "connection_name": "list_BOOKSHOP_STAGGING"} */
+show objects in BOOKSHOP.STAGGING limit 10000
+[0m00:54:33.144457 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m00:54:34.522384 [debug] [ThreadPool]: SQL status: SUCCESS 5 in 1.378 seconds
+[0m00:54:34.542059 [debug] [ThreadPool]: On list_BOOKSHOP_STAGGING: Close
+[0m00:54:34.919177 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_BOOKSHOP_STAGGING, now list_BOOKSHOP_MARTS)
+[0m00:54:34.946307 [debug] [ThreadPool]: Using snowflake connection "list_BOOKSHOP_MARTS"
+[0m00:54:34.950035 [debug] [ThreadPool]: On list_BOOKSHOP_MARTS: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "connection_name": "list_BOOKSHOP_MARTS"} */
+show objects in BOOKSHOP.MARTS limit 10000
+[0m00:54:34.953543 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m00:54:36.312884 [debug] [ThreadPool]: SQL status: SUCCESS 1 in 1.359 seconds
+[0m00:54:36.340057 [debug] [ThreadPool]: On list_BOOKSHOP_MARTS: Close
+[0m00:54:36.745487 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '92ab3fc4-730c-4731-bc3e-00f7b5b12fc4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f912c4fa640>]}
+[0m00:54:36.768046 [info ] [MainThread]: Concurrency: 1 threads (target='dev')
+[0m00:54:36.789739 [info ] [MainThread]: 
+[0m00:54:36.881227 [debug] [Thread-1  ]: Began running node model.bookshop.dim_books
+[0m00:54:36.896988 [info ] [Thread-1  ]: 1 of 8 START sql table model WAREHOUSE.dim_books ............................... [RUN]
+[0m00:54:36.920754 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly list_BOOKSHOP_MARTS, now model.bookshop.dim_books)
+[0m00:54:36.925174 [debug] [Thread-1  ]: Began compiling node model.bookshop.dim_books
+[0m00:54:37.085023 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.dim_books"
+[0m00:54:37.105598 [debug] [Thread-1  ]: Began executing node model.bookshop.dim_books
+[0m00:54:37.688421 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.dim_books"
+[0m00:54:37.710431 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.dim_books"
+[0m00:54:37.736849 [debug] [Thread-1  ]: On model.bookshop.dim_books: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.dim_books"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.dim_books
+         as
+        (
+
+SELECT
+    id,
+    category_id,
+    code,
+    intitule,
+    isbn_10,
+    isbn_13,
+    created_at
+FROM BOOKSHOP.STAGGING.stg_books
+        );
+[0m00:54:37.757044 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:54:40.316008 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.559 seconds
+[0m00:54:40.718091 [debug] [Thread-1  ]: On model.bookshop.dim_books: Close
+[0m00:54:41.127955 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '92ab3fc4-730c-4731-bc3e-00f7b5b12fc4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f9141355490>]}
+[0m00:54:41.133472 [info ] [Thread-1  ]: 1 of 8 OK created sql table model WAREHOUSE.dim_books .......................... [[32mSUCCESS 1[0m in 4.21s]
+[0m00:54:41.138465 [debug] [Thread-1  ]: Finished running node model.bookshop.dim_books
+[0m00:54:41.141636 [debug] [Thread-1  ]: Began running node model.bookshop.dim_category
+[0m00:54:41.146653 [info ] [Thread-1  ]: 2 of 8 START sql table model WAREHOUSE.dim_category ............................ [RUN]
+[0m00:54:41.149320 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.dim_books, now model.bookshop.dim_category)
+[0m00:54:41.152868 [debug] [Thread-1  ]: Began compiling node model.bookshop.dim_category
+[0m00:54:41.171880 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.dim_category"
+[0m00:54:41.175263 [debug] [Thread-1  ]: Began executing node model.bookshop.dim_category
+[0m00:54:41.191670 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.dim_category"
+[0m00:54:41.204028 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.dim_category"
+[0m00:54:41.208107 [debug] [Thread-1  ]: On model.bookshop.dim_category: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.dim_category"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.dim_category
+         as
+        (
+
+SELECT
+    id,
+    intitule,
+    created_at
+FROM BOOKSHOP.STAGGING.stg_category
+        );
+[0m00:54:41.211901 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:54:43.030304 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 1.818 seconds
+[0m00:54:43.112795 [debug] [Thread-1  ]: On model.bookshop.dim_category: Close
+[0m00:54:43.640473 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '92ab3fc4-730c-4731-bc3e-00f7b5b12fc4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f91176a87c0>]}
+[0m00:54:43.653450 [info ] [Thread-1  ]: 2 of 8 OK created sql table model WAREHOUSE.dim_category ....................... [[32mSUCCESS 1[0m in 2.48s]
+[0m00:54:43.667302 [debug] [Thread-1  ]: Finished running node model.bookshop.dim_category
+[0m00:54:43.669686 [debug] [Thread-1  ]: Began running node model.bookshop.dim_customers
+[0m00:54:43.673022 [info ] [Thread-1  ]: 3 of 8 START sql table model WAREHOUSE.dim_customers ........................... [RUN]
+[0m00:54:43.679027 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.dim_category, now model.bookshop.dim_customers)
+[0m00:54:43.682632 [debug] [Thread-1  ]: Began compiling node model.bookshop.dim_customers
+[0m00:54:43.700473 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.dim_customers"
+[0m00:54:43.704692 [debug] [Thread-1  ]: Began executing node model.bookshop.dim_customers
+[0m00:54:43.718112 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.dim_customers"
+[0m00:54:43.724265 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.dim_customers"
+[0m00:54:43.736097 [debug] [Thread-1  ]: On model.bookshop.dim_customers: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.dim_customers"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.dim_customers
+         as
+        (
+
+SELECT
+    id,
+    code,
+    first_name,
+    last_name,
+    CONCAT(first_name, ' ', last_name) as nom,
+    created_at
+FROM BOOKSHOP.STAGGING.stg_customers
+        );
+[0m00:54:43.739368 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:54:45.614631 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 1.889 seconds
+[0m00:54:45.621258 [debug] [Thread-1  ]: On model.bookshop.dim_customers: Close
+[0m00:54:45.963969 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '92ab3fc4-730c-4731-bc3e-00f7b5b12fc4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f911757b130>]}
+[0m00:54:45.967476 [info ] [Thread-1  ]: 3 of 8 OK created sql table model WAREHOUSE.dim_customers ...................... [[32mSUCCESS 1[0m in 2.29s]
+[0m00:54:45.976232 [debug] [Thread-1  ]: Finished running node model.bookshop.dim_customers
+[0m00:54:45.979310 [debug] [Thread-1  ]: Began running node model.bookshop.fact_factures
+[0m00:54:45.982560 [info ] [Thread-1  ]: 4 of 8 START sql table model WAREHOUSE.fact_factures ........................... [RUN]
+[0m00:54:45.986581 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.dim_customers, now model.bookshop.fact_factures)
+[0m00:54:45.989424 [debug] [Thread-1  ]: Began compiling node model.bookshop.fact_factures
+[0m00:54:46.010596 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.fact_factures"
+[0m00:54:46.015154 [debug] [Thread-1  ]: Began executing node model.bookshop.fact_factures
+[0m00:54:46.026722 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.fact_factures"
+[0m00:54:46.038251 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.fact_factures"
+[0m00:54:46.040974 [debug] [Thread-1  ]: On model.bookshop.fact_factures: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.fact_factures"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.fact_factures
+         as
+        (
+
+SELECT
+--     id,
+    facture_id,
+    facture_id AS code,
+    date_facturation,
+    EXTRACT(YEAR FROM date_facturation) as annees,
+    CASE EXTRACT(MONTH FROM date_facturation)
+        WHEN 1 THEN 'janvier'
+        WHEN 2 THEN 'fevrier'
+        WHEN 3 THEN 'mars'
+        WHEN 4 THEN 'avril'
+        WHEN 5 THEN 'mai'
+        WHEN 6 THEN 'juin'
+        WHEN 7 THEN 'juillet'
+        WHEN 8 THEN 'aout'
+        WHEN 9 THEN 'septembre'
+        WHEN 10 THEN 'octobre'
+        WHEN 11 THEN 'novembre'
+        WHEN 12 THEN 'decembre'
+    END as mois,
+    CASE EXTRACT(DOW FROM date_facturation)
+        WHEN 0 THEN 'dimanche'
+        WHEN 1 THEN 'lundi'
+        WHEN 2 THEN 'mardi'
+        WHEN 3 THEN 'mercredi'
+        WHEN 4 THEN 'jeudi'
+        WHEN 5 THEN 'vendredi'
+        WHEN 6 THEN 'samedi'
+    END as jour,
+    client_id,
+    quantite_totale as qte_totale,
+    montant_ht as total_amount,
+    montant_ttc as total_paid,
+    created_at
+FROM BOOKSHOP.STAGGING.stg_factures
+        );
+[0m00:54:46.043433 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:54:47.816624 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 1.773 seconds
+[0m00:54:47.855588 [debug] [Thread-1  ]: On model.bookshop.fact_factures: Close
+[0m00:54:48.260022 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '92ab3fc4-730c-4731-bc3e-00f7b5b12fc4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f91176ecbe0>]}
+[0m00:54:48.284898 [info ] [Thread-1  ]: 4 of 8 OK created sql table model WAREHOUSE.fact_factures ...................... [[32mSUCCESS 1[0m in 2.27s]
+[0m00:54:48.291073 [debug] [Thread-1  ]: Finished running node model.bookshop.fact_factures
+[0m00:54:48.304547 [debug] [Thread-1  ]: Began running node model.bookshop.fact_ventes
+[0m00:54:48.315432 [info ] [Thread-1  ]: 5 of 8 START sql table model WAREHOUSE.fact_ventes ............................. [RUN]
+[0m00:54:48.330819 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.fact_factures, now model.bookshop.fact_ventes)
+[0m00:54:48.336399 [debug] [Thread-1  ]: Began compiling node model.bookshop.fact_ventes
+[0m00:54:48.390502 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.fact_ventes"
+[0m00:54:48.428971 [debug] [Thread-1  ]: Began executing node model.bookshop.fact_ventes
+[0m00:54:48.498231 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.fact_ventes"
+[0m00:54:48.550758 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.fact_ventes"
+[0m00:54:48.619817 [debug] [Thread-1  ]: On model.bookshop.fact_ventes: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.fact_ventes"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.fact_ventes
+         as
+        (
+
+WITH source AS (
+    SELECT * FROM BOOKSHOP.STAGGING.stg_ventes
+)
+
+SELECT
+    reference as code,
+    vente_id AS id,
+    EXTRACT(YEAR FROM date_vente) AS annees,
+    CASE EXTRACT(MONTH FROM date_vente)
+        WHEN 1 THEN 'janvier'
+        WHEN 2 THEN 'fevrier'
+        WHEN 3 THEN 'mars'
+        WHEN 4 THEN 'avril'
+        WHEN 5 THEN 'mai'
+        WHEN 6 THEN 'juin'
+        WHEN 7 THEN 'juillet'
+        WHEN 8 THEN 'aout'
+        WHEN 9 THEN 'septembre'
+        WHEN 10 THEN 'octobre'
+        WHEN 11 THEN 'novembre'
+        WHEN 12 THEN 'decembre'
+        END AS mois,
+    CASE EXTRACT(DOW FROM date_vente)
+        WHEN 0 THEN 'dimanche'
+        WHEN 1 THEN 'lundi'
+        WHEN 2 THEN 'mardi'
+        WHEN 3 THEN 'mercredi'
+        WHEN 4 THEN 'jeudi'
+        WHEN 5 THEN 'vendredi'
+        WHEN 6 THEN 'samedi'
+        END AS jour,
+    prix_unitaire AS pu,
+    quantite AS qte,
+    facture_id,
+    livre_id,
+    created_at
+FROM source
+        );
+[0m00:54:48.625248 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:54:50.840011 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 2.215 seconds
+[0m00:54:50.855958 [debug] [Thread-1  ]: On model.bookshop.fact_ventes: Close
+[0m00:54:51.214068 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '92ab3fc4-730c-4731-bc3e-00f7b5b12fc4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f912c44e190>]}
+[0m00:54:51.220189 [info ] [Thread-1  ]: 5 of 8 OK created sql table model WAREHOUSE.fact_ventes ........................ [[32mSUCCESS 1[0m in 2.88s]
+[0m00:54:51.224926 [debug] [Thread-1  ]: Finished running node model.bookshop.fact_ventes
+[0m00:54:51.230845 [debug] [Thread-1  ]: Began running node model.bookshop.fact_books_annees
+[0m00:54:51.235928 [info ] [Thread-1  ]: 6 of 8 START sql table model WAREHOUSE.fact_books_annees ....................... [RUN]
+[0m00:54:51.239880 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.fact_ventes, now model.bookshop.fact_books_annees)
+[0m00:54:51.243619 [debug] [Thread-1  ]: Began compiling node model.bookshop.fact_books_annees
+[0m00:54:51.267493 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.fact_books_annees"
+[0m00:54:51.278093 [debug] [Thread-1  ]: Began executing node model.bookshop.fact_books_annees
+[0m00:54:51.296961 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.fact_books_annees"
+[0m00:54:51.303936 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.fact_books_annees"
+[0m00:54:51.307015 [debug] [Thread-1  ]: On model.bookshop.fact_books_annees: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.fact_books_annees"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.fact_books_annees
+         as
+        (
+
+SELECT
+--     b.code AS book_code,
+    b.intitule AS book_title,
+    v.annees,
+    COUNT(*) AS nombre_ventes,
+    SUM(v.qte) AS quantite_totale,
+    SUM(v.pu * v.qte) AS montant_total
+FROM BOOKSHOP.WAREHOUSE.fact_ventes v
+JOIN BOOKSHOP.WAREHOUSE.dim_books b ON v.livre_id = b.id
+GROUP BY b.code, b.intitule, v.annees
+        );
+[0m00:54:51.309657 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:54:53.096925 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 1.787 seconds
+[0m00:54:53.127992 [debug] [Thread-1  ]: On model.bookshop.fact_books_annees: Close
+[0m00:54:53.509111 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '92ab3fc4-730c-4731-bc3e-00f7b5b12fc4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f91176466d0>]}
+[0m00:54:53.511296 [info ] [Thread-1  ]: 6 of 8 OK created sql table model WAREHOUSE.fact_books_annees .................. [[32mSUCCESS 1[0m in 2.27s]
+[0m00:54:53.513795 [debug] [Thread-1  ]: Finished running node model.bookshop.fact_books_annees
+[0m00:54:53.515453 [debug] [Thread-1  ]: Began running node model.bookshop.fact_books_jour
+[0m00:54:53.517491 [info ] [Thread-1  ]: 7 of 8 START sql table model WAREHOUSE.fact_books_jour ......................... [RUN]
+[0m00:54:53.520227 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.fact_books_annees, now model.bookshop.fact_books_jour)
+[0m00:54:53.522588 [debug] [Thread-1  ]: Began compiling node model.bookshop.fact_books_jour
+[0m00:54:53.533677 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.fact_books_jour"
+[0m00:54:53.536800 [debug] [Thread-1  ]: Began executing node model.bookshop.fact_books_jour
+[0m00:54:53.545567 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.fact_books_jour"
+[0m00:54:53.549770 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.fact_books_jour"
+[0m00:54:53.552326 [debug] [Thread-1  ]: On model.bookshop.fact_books_jour: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.fact_books_jour"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.fact_books_jour
+         as
+        (
+
+SELECT
+--     b.id as book_id,
+    b.code AS book_code,
+    b.intitule AS book_title,
+    v.annees,
+    v.mois,
+    v.jour,
+    COUNT(*) AS nombre_ventes,
+    SUM(v.qte) AS quantite_totale,
+    SUM(v.pu * v.qte) AS montant_total
+FROM BOOKSHOP.WAREHOUSE.fact_ventes v
+JOIN BOOKSHOP.WAREHOUSE.dim_books b ON v.livre_id = b.id
+GROUP BY b.id, b.code, b.intitule, v.annees, v.mois, v.jour
+        );
+[0m00:54:53.554793 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:54:55.228176 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 1.673 seconds
+[0m00:54:55.240919 [debug] [Thread-1  ]: On model.bookshop.fact_books_jour: Close
+[0m00:54:55.579135 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '92ab3fc4-730c-4731-bc3e-00f7b5b12fc4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f9141355490>]}
+[0m00:54:55.592764 [info ] [Thread-1  ]: 7 of 8 OK created sql table model WAREHOUSE.fact_books_jour .................... [[32mSUCCESS 1[0m in 2.06s]
+[0m00:54:55.610111 [debug] [Thread-1  ]: Finished running node model.bookshop.fact_books_jour
+[0m00:54:55.614684 [debug] [Thread-1  ]: Began running node model.bookshop.fact_books_mois
+[0m00:54:55.619907 [info ] [Thread-1  ]: 8 of 8 START sql table model WAREHOUSE.fact_books_mois ......................... [RUN]
+[0m00:54:55.633260 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly model.bookshop.fact_books_jour, now model.bookshop.fact_books_mois)
+[0m00:54:55.637409 [debug] [Thread-1  ]: Began compiling node model.bookshop.fact_books_mois
+[0m00:54:55.662785 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.fact_books_mois"
+[0m00:54:55.758103 [debug] [Thread-1  ]: Began executing node model.bookshop.fact_books_mois
+[0m00:54:55.806795 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.fact_books_mois"
+[0m00:54:55.819434 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.fact_books_mois"
+[0m00:54:55.824620 [debug] [Thread-1  ]: On model.bookshop.fact_books_mois: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.fact_books_mois"} */
+create or replace transient table BOOKSHOP.WAREHOUSE.fact_books_mois
+         as
+        (
+
+SELECT
+    b.id as book_id,
+    b.code AS book_code,
+    b.intitule AS book_title,
+    v.annees,
+    v.mois,
+    COUNT(*) AS nombre_ventes,
+    SUM(v.qte) AS quantite_totale,
+    SUM(v.pu * v.qte) AS montant_total
+FROM BOOKSHOP.WAREHOUSE.fact_ventes v
+JOIN BOOKSHOP.WAREHOUSE.dim_books b ON v.livre_id = b.id
+GROUP BY b.code, book_id, b.intitule, v.annees, v.mois
+        );
+[0m00:54:55.832014 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:54:57.470724 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 1.627 seconds
+[0m00:54:57.504565 [debug] [Thread-1  ]: On model.bookshop.fact_books_mois: Close
+[0m00:54:57.903843 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '92ab3fc4-730c-4731-bc3e-00f7b5b12fc4', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f912c44e190>]}
+[0m00:54:57.989085 [info ] [Thread-1  ]: 8 of 8 OK created sql table model WAREHOUSE.fact_books_mois .................... [[32mSUCCESS 1[0m in 2.27s]
+[0m00:54:58.004491 [debug] [Thread-1  ]: Finished running node model.bookshop.fact_books_mois
+[0m00:54:58.013185 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m00:54:58.034340 [debug] [MainThread]: Connection 'model.bookshop.fact_books_mois' was properly closed.
+[0m00:54:58.043795 [info ] [MainThread]: 
+[0m00:54:58.054513 [info ] [MainThread]: Finished running 8 table models in 0 hours 0 minutes and 30.95 seconds (30.95s).
+[0m00:54:58.077217 [debug] [MainThread]: Command end result
+[0m00:54:58.686053 [info ] [MainThread]: 
+[0m00:54:58.690749 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m00:54:58.697131 [info ] [MainThread]: 
+[0m00:54:58.705861 [info ] [MainThread]: Done. PASS=8 WARN=0 ERROR=0 SKIP=0 TOTAL=8
+[0m00:54:58.712513 [debug] [MainThread]: Resource report: {"command_name": "run", "command_success": true, "command_wall_clock_time": 52.00987, "process_user_time": 47.39891, "process_kernel_time": 7.37823, "process_mem_max_rss": "208788", "process_out_blocks": "3688", "process_in_blocks": "0"}
+[0m00:54:58.723176 [debug] [MainThread]: Command `dbt run` succeeded at 00:54:58.722537 after 52.02 seconds
+[0m00:54:58.727896 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f914135d220>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f913ff8eeb0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f912cb79d00>]}
+[0m00:54:58.744508 [debug] [MainThread]: Flushing usage events
+[0m00:55:35.781447 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4156a63310>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4157a90f10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4154dda460>]}
+
+
+============================== 00:55:35.803706 | 104a1bed-d5b8-4bc2-ac21-9917b3fcc504 ==============================
+[0m00:55:35.803706 [info ] [MainThread]: Running with dbt=1.8.7
+[0m00:55:35.808003 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'log_cache_events': 'False', 'write_json': 'True', 'partial_parse': 'False', 'cache_selected_only': 'False', 'warn_error': 'None', 'fail_fast': 'False', 'version_check': 'True', 'log_path': '/opt/airflow/dbt/logs', 'profiles_dir': '/opt/airflow/dbt', 'debug': 'False', 'use_colors': 'True', 'use_experimental_parser': 'False', 'no_print': 'None', 'quiet': 'False', 'empty': 'False', 'log_format': 'default', 'introspect': 'True', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'static_parser': 'True', 'target_path': '/tmp/dbt_target', 'invocation_command': 'dbt run --models marts --no-partial-parse --target-path /tmp/dbt_target', 'send_anonymous_usage_stats': 'True'}
+[0m00:55:45.188288 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '104a1bed-d5b8-4bc2-ac21-9917b3fcc504', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f41423d5970>]}
+[0m00:55:45.687723 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '104a1bed-d5b8-4bc2-ac21-9917b3fcc504', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4142345910>]}
+[0m00:55:45.695849 [info ] [MainThread]: Registered adapter: snowflake=1.8.4
+[0m00:55:45.864186 [debug] [MainThread]: checksum: 4af21dafb485259c48497ac86b711ddb1982f3d0f1c0ca4e09356de488b753c0, vars: {}, profile: , target: , version: 1.8.7
+[0m00:55:45.877370 [debug] [MainThread]: Partial parsing not enabled
+[0m00:56:01.406895 [warn ] [MainThread]: [[33mWARNING[0m]: Deprecated functionality
+The `tests` config has been renamed to `data_tests`. Please see
+https://docs.getdbt.com/docs/build/data-tests#new-data_tests-syntax for more
+information.
+[0m00:56:01.413113 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'deprecation', 'label': '104a1bed-d5b8-4bc2-ac21-9917b3fcc504', 'property_': 'warn', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f414236c0a0>]}
+[0m00:56:09.015653 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '104a1bed-d5b8-4bc2-ac21-9917b3fcc504', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f41419f0bb0>]}
+[0m00:56:15.312054 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '104a1bed-d5b8-4bc2-ac21-9917b3fcc504', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4141aec670>]}
+[0m00:56:15.324699 [info ] [MainThread]: Found 14 models, 38 data tests, 10 sources, 468 macros
+[0m00:56:15.333628 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '104a1bed-d5b8-4bc2-ac21-9917b3fcc504', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f414199eac0>]}
+[0m00:56:15.358080 [info ] [MainThread]: 
+[0m00:56:16.108214 [debug] [MainThread]: Acquiring new snowflake connection 'master'
+[0m00:56:16.155456 [debug] [ThreadPool]: Acquiring new snowflake connection 'list_BOOKSHOP'
+[0m00:56:16.342538 [debug] [ThreadPool]: Using snowflake connection "list_BOOKSHOP"
+[0m00:56:17.049057 [debug] [ThreadPool]: On list_BOOKSHOP: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "connection_name": "list_BOOKSHOP"} */
+show terse schemas in database BOOKSHOP
+    limit 10000
+[0m00:56:17.090947 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m00:56:23.920398 [debug] [ThreadPool]: SQL status: SUCCESS 6 in 6.829 seconds
+[0m00:56:23.949140 [debug] [ThreadPool]: On list_BOOKSHOP: Close
+[0m00:56:24.541105 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_BOOKSHOP, now list_BOOKSHOP_WAREHOUSE)
+[0m00:56:24.713565 [debug] [ThreadPool]: Using snowflake connection "list_BOOKSHOP_WAREHOUSE"
+[0m00:56:24.725770 [debug] [ThreadPool]: On list_BOOKSHOP_WAREHOUSE: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "connection_name": "list_BOOKSHOP_WAREHOUSE"} */
+show objects in BOOKSHOP.WAREHOUSE limit 10000
+[0m00:56:24.741864 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m00:56:26.506651 [debug] [ThreadPool]: SQL status: SUCCESS 8 in 1.774 seconds
+[0m00:56:26.534846 [debug] [ThreadPool]: On list_BOOKSHOP_WAREHOUSE: Close
+[0m00:56:27.070845 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_BOOKSHOP_WAREHOUSE, now list_BOOKSHOP_STAGGING)
+[0m00:56:27.116462 [debug] [ThreadPool]: Using snowflake connection "list_BOOKSHOP_STAGGING"
+[0m00:56:27.132965 [debug] [ThreadPool]: On list_BOOKSHOP_STAGGING: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "connection_name": "list_BOOKSHOP_STAGGING"} */
+show objects in BOOKSHOP.STAGGING limit 10000
+[0m00:56:27.140731 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m00:56:28.570093 [debug] [ThreadPool]: SQL status: SUCCESS 5 in 1.429 seconds
+[0m00:56:28.627063 [debug] [ThreadPool]: On list_BOOKSHOP_STAGGING: Close
+[0m00:56:29.076026 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_BOOKSHOP_STAGGING, now list_BOOKSHOP_MARTS)
+[0m00:56:29.141424 [debug] [ThreadPool]: Using snowflake connection "list_BOOKSHOP_MARTS"
+[0m00:56:29.148048 [debug] [ThreadPool]: On list_BOOKSHOP_MARTS: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "connection_name": "list_BOOKSHOP_MARTS"} */
+show objects in BOOKSHOP.MARTS limit 10000
+[0m00:56:29.156735 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m00:56:31.234604 [debug] [ThreadPool]: SQL status: SUCCESS 1 in 2.081 seconds
+[0m00:56:31.298913 [debug] [ThreadPool]: On list_BOOKSHOP_MARTS: Close
+[0m00:56:31.813875 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '104a1bed-d5b8-4bc2-ac21-9917b3fcc504', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4141c5f6d0>]}
+[0m00:56:31.843879 [info ] [MainThread]: Concurrency: 1 threads (target='dev')
+[0m00:56:31.876776 [info ] [MainThread]: 
+[0m00:56:31.963594 [debug] [Thread-1  ]: Began running node model.bookshop.obt_sales
+[0m00:56:31.989322 [info ] [Thread-1  ]: 1 of 1 START sql table model MARTS.obt_sales ................................... [RUN]
+[0m00:56:32.027469 [debug] [Thread-1  ]: Re-using an available connection from the pool (formerly list_BOOKSHOP_MARTS, now model.bookshop.obt_sales)
+[0m00:56:32.077283 [debug] [Thread-1  ]: Began compiling node model.bookshop.obt_sales
+[0m00:56:32.246351 [debug] [Thread-1  ]: Writing injected SQL for node "model.bookshop.obt_sales"
+[0m00:56:32.270807 [debug] [Thread-1  ]: Began executing node model.bookshop.obt_sales
+[0m00:56:32.848993 [debug] [Thread-1  ]: Writing runtime sql for node "model.bookshop.obt_sales"
+[0m00:56:33.172277 [debug] [Thread-1  ]: Using snowflake connection "model.bookshop.obt_sales"
+[0m00:56:33.209925 [debug] [Thread-1  ]: On model.bookshop.obt_sales: /* {"app": "dbt", "dbt_version": "1.8.7", "profile_name": "bookshop", "target_name": "dev", "node_id": "model.bookshop.obt_sales"} */
+create or replace transient table BOOKSHOP.MARTS.obt_sales
+         as
+        (
+
+WITH ventes AS (
+    SELECT * FROM BOOKSHOP.WAREHOUSE.fact_ventes
+),
+factures AS (
+    SELECT * FROM BOOKSHOP.WAREHOUSE.fact_factures
+),
+category AS (
+    SELECT * FROM BOOKSHOP.WAREHOUSE.dim_category
+),
+books AS (
+    SELECT * FROM BOOKSHOP.WAREHOUSE.dim_books
+),
+customers AS (
+    SELECT * FROM BOOKSHOP.WAREHOUSE.dim_customers
+)
+
+SELECT
+    v.id,
+    v.annees,
+    v.mois,
+    v.jour,
+    v.pu,
+    v.qte,
+    f.facture_id as facture_id,
+    f.code as facture_code,
+    f.qte_totale,
+    f.total_amount,
+    f.total_paid,
+    c.intitule as category_intitule,
+    b.code as book_code,
+    b.intitule as book_intitule,
+    b.isbn_10,
+    b.isbn_13,
+    cu.code as customer_code,
+    cu.nom as customer_nom
+FROM ventes v
+JOIN factures f ON v.facture_id = f.facture_id
+JOIN books b ON v.livre_id = b.id
+JOIN category c ON b.category_id = c.id
+JOIN customers cu ON f.client_id = cu.id
+        );
+[0m00:56:33.234525 [debug] [Thread-1  ]: Opening a new connection, currently in state closed
+[0m00:56:36.445840 [debug] [Thread-1  ]: SQL status: SUCCESS 1 in 3.200 seconds
+[0m00:56:37.125070 [debug] [Thread-1  ]: On model.bookshop.obt_sales: Close
+[0m00:56:37.644163 [debug] [Thread-1  ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '104a1bed-d5b8-4bc2-ac21-9917b3fcc504', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f41424d6be0>]}
+[0m00:56:37.677829 [info ] [Thread-1  ]: 1 of 1 OK created sql table model MARTS.obt_sales .............................. [[32mSUCCESS 1[0m in 5.60s]
+[0m00:56:37.710974 [debug] [Thread-1  ]: Finished running node model.bookshop.obt_sales
+[0m00:56:37.751754 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m00:56:37.757867 [debug] [MainThread]: Connection 'model.bookshop.obt_sales' was properly closed.
+[0m00:56:37.773490 [info ] [MainThread]: 
+[0m00:56:37.785428 [info ] [MainThread]: Finished running 1 table model in 0 hours 0 minutes and 21.67 seconds (21.67s).
+[0m00:56:37.797383 [debug] [MainThread]: Command end result
+[0m00:56:38.701546 [info ] [MainThread]: 
+[0m00:56:38.721260 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m00:56:38.753516 [info ] [MainThread]: 
+[0m00:56:38.777479 [info ] [MainThread]: Done. PASS=1 WARN=0 ERROR=0 SKIP=0 TOTAL=1
+[0m00:56:38.820591 [debug] [MainThread]: Resource report: {"command_name": "run", "command_success": true, "command_wall_clock_time": 63.36825, "process_user_time": 57.590252, "process_kernel_time": 9.632456, "process_mem_max_rss": "212064", "process_out_blocks": "3552", "process_in_blocks": "0"}
+[0m00:56:38.858074 [debug] [MainThread]: Command `dbt run` succeeded at 00:56:38.857400 after 63.41 seconds
+[0m00:56:38.876653 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4156a63310>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4141bef2b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f4142345910>]}
+[0m00:56:38.888087 [debug] [MainThread]: Flushing usage events
