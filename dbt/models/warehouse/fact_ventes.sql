@@ -38,6 +38,6 @@ SELECT
     prix_unitaire AS pu,
     quantite AS qte,
     facture_id,
-    livre_id,
-    created_at
+    livre_id
+--     created_at
 FROM source
