@@ -24,7 +24,7 @@ with DAG(
     # Staging transformations
     dbt_staging = BashOperator(
         task_id='dbt_staging',
-        bash_command='cd /opt/airflow/dbt && mkdir -p /tmp/dbt_target && dbt run --models staging --no-partial-parse --target-path /tmp/dbt_target',
+        bash_command='cd /opt/airflow/dbt && mkdir -p /tmp/dbt_target && dbt run --models staging --no-partial-parse --target-path /tmp/dbt_target'
     )
 
     # Warehouse transformations

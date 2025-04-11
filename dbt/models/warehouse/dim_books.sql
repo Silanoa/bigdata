@@ -11,5 +11,5 @@ SELECT
     intitule,
     isbn_10,
     isbn_13,
-    created_at
+--     created_at
 FROM {{ ref('stg_books') }}

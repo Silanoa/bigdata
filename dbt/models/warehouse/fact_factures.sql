@@ -36,6 +36,6 @@ SELECT
     client_id,
     quantite_totale as qte_totale,
     montant_ht as total_amount,
-    montant_ttc as total_paid,
-    created_at
+    montant_ttc as total_paid
+--     created_at
 FROM {{ ref('stg_factures') }}
